@@ -14,6 +14,7 @@ const WaterScript = preload("res://scripts/art/water_surface.gd")
 var world_id: String = "shanghai"
 var player: Node3D
 var friends: Array[FriendNPC] = []
+var companion_trail: Array[Vector3] = []
 
 
 func build(new_world_id: String, player_node: Node3D) -> void:
@@ -47,8 +48,35 @@ func get_closest_interactable(from_position: Vector3, max_distance: float = 3.25
 
 
 func refresh_friend_following() -> void:
+	companion_trail.clear()
+	if GameState.friends_in_party and player != null:
+		companion_trail.append(player.global_position)
 	for friend in friends:
 		friend.set_follow_target(player if GameState.friends_in_party else null)
+
+
+func update_companion_trail(player_position: Vector3) -> void:
+	if not GameState.friends_in_party or friends.is_empty():
+		return
+	if companion_trail.is_empty():
+		companion_trail.append(player_position)
+	if companion_trail.back().distance_to(player_position) >= 0.38:
+		companion_trail.append(player_position)
+		if companion_trail.size() > 90:
+			companion_trail.pop_front()
+	for index in range(friends.size()):
+		var steps_back := 8 + index * 6
+		var trail_index := maxi(0, companion_trail.size() - 1 - steps_back)
+		var point := companion_trail[trail_index]
+		var path_direction := Vector3(0, 0, -1)
+		if trail_index < companion_trail.size() - 1:
+			path_direction = companion_trail[trail_index + 1] - point
+			path_direction.y = 0.0
+			if path_direction.length_squared() > 0.001:
+				path_direction = path_direction.normalized()
+		var side := Vector3(-path_direction.z, 0, path_direction.x)
+		var side_amount := -0.38 if index == 0 else 0.38
+		friends[index].set_follow_point(point + side * side_amount)
 
 
 func wave_friend(friend_id: String) -> void:

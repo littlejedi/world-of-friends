@@ -11,8 +11,11 @@ var height_scale: float = 0.94
 var shirt_color: Color = Color("#4a78ba")
 var follow_target: Node3D
 var follow_offset: Vector3 = Vector3.ZERO
+var follow_point: Vector3 = Vector3.ZERO
+var using_follow_point: bool = false
 var visual: Node3D
 var walk_time: float = 0.0
+var idle_time: float = 0.0
 var wave_tween: Tween
 
 
@@ -53,11 +56,13 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if follow_target == null:
+	if follow_target == null and not using_follow_point:
 		velocity = velocity.move_toward(Vector3.ZERO, delta * 12.0)
+		_apply_gravity(delta)
 		move_and_slide()
+		_animate_idle(delta)
 		return
-	var target_position := follow_target.global_position + follow_offset
+	var target_position := follow_point if using_follow_point else follow_target.global_position + follow_offset
 	var planar_delta := target_position - global_position
 	planar_delta.y = 0.0
 	var distance := planar_delta.length()
@@ -72,19 +77,45 @@ func _physics_process(delta: float) -> void:
 		look_at(global_position + direction, Vector3.UP)
 		walk_time += delta * 8.0
 		visual.position.y = abs(sin(walk_time)) * 0.04
+		_reset_idle_pose()
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, delta * 12.0)
 		velocity.z = move_toward(velocity.z, 0.0, delta * 12.0)
 		visual.position.y = move_toward(visual.position.y, 0.0, delta * 0.4)
-	if not is_on_floor():
-		velocity.y -= 24.0 * delta
-	else:
-		velocity.y = -0.5
+		_animate_idle(delta)
+	_apply_gravity(delta)
 	move_and_slide()
 
 
 func set_follow_target(new_target: Node3D) -> void:
 	follow_target = new_target
+	using_follow_point = false
+
+
+func set_follow_point(new_point: Vector3) -> void:
+	follow_point = new_point
+	using_follow_point = true
+
+
+func _apply_gravity(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y -= 24.0 * delta
+	else:
+		velocity.y = -0.5
+
+
+func _animate_idle(delta: float) -> void:
+	idle_time += delta
+	var head := visual.get_node_or_null("Head") as Node3D
+	if head != null:
+		head.rotation_degrees.y = sin(idle_time * 1.15 + float(friend_id.length())) * 4.0
+
+
+func _reset_idle_pose() -> void:
+	idle_time = 0.0
+	var head := visual.get_node_or_null("Head") as Node3D
+	if head != null:
+		head.rotation_degrees.y = move_toward(head.rotation_degrees.y, 0.0, 1.5)
 
 
 func get_interaction_prompt() -> String:

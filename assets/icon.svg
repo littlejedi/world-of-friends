@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" shape-rendering="crispEdges">
+  <defs>
+    <clipPath id="globe"><circle cx="128" cy="136" r="76"/></clipPath>
+  </defs>
+  <rect width="256" height="256" rx="38" fill="#111827"/>
+  <rect x="14" y="14" width="228" height="228" rx="28" fill="none" stroke="#e3b85f" stroke-width="8"/>
+  <circle cx="128" cy="136" r="80" fill="#82cbd3"/>
+  <g clip-path="url(#globe)" fill="#4d8d63">
+    <rect x="56" y="91" width="34" height="30"/>
+    <rect x="74" y="69" width="42" height="28"/>
+    <rect x="92" y="112" width="32" height="41"/>
+    <rect x="147" y="79" width="43" height="35"/>
+    <rect x="165" y="106" width="38" height="42"/>
+    <rect x="128" y="153" width="45" height="43"/>
+    <rect x="77" y="172" width="38" height="27"/>
+  </g>
+  <path d="M70 155 C91 91 159 79 191 130" fill="none" stroke="#fff0ae" stroke-width="6" stroke-dasharray="10 8"/>
+  <rect x="57" y="145" width="24" height="24" fill="#d85f80" stroke="#fff0ae" stroke-width="4"/>
+  <rect x="179" y="119" width="24" height="24" fill="#397e83" stroke="#fff0ae" stroke-width="4"/>
+  <g transform="translate(124 88) rotate(-18)">
+    <path d="M-20 8 L18 8 L30 0 L18-8 L-20-8 Z" fill="#f2f3ed"/>
+    <rect x="-8" y="-6" width="10" height="6" fill="#5cc5df"/>
+    <path d="M-20-6 L-34 0 L-20 6 Z" fill="#f2a64b"/>
+  </g>
+</svg>

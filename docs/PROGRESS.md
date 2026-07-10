@@ -32,8 +32,21 @@
 - Expanded automated coverage for disk persistence, landmarks, selected trades, water, and reactions.
 - Native M5 visual QA for the trade panel and Seattle waterfront shader.
 
+## Checkpoint 3 — Companion polish, collection, and Mac build
+
+- Breadcrumb-based party following so Kent and Joey retrace the player's route around corners.
+- Subtle companion idle head motion in addition to greeting waves.
+- In-game collection viewer available with `C` and from the pause menu.
+- Pause menu with resume, collection, explicit save, and quit actions.
+- Collection count added to the exploration HUD.
+- Original pixel-globe and shuttle application icon.
+- Reproducible Universal macOS release export preset with tests and build output excluded.
+- Successful 177 MB release app export containing native ARM64 and Intel executables.
+- Exported binary launched headlessly without project/runtime errors.
+- Automated suite expanded to 29 checks for breadcrumb following, collection, and pause actions.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.
-- Improve companion navigation around buildings and add varied idle animation.
-- Add an in-game collection viewer and pause/settings menu.
+- Add more street life, ambient audio, and landmark-specific animation.
+- Produce a browser export and measure its download/runtime profile.

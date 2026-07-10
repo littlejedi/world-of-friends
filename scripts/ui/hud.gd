@@ -5,11 +5,14 @@ signal travel_confirmed(destination: String)
 signal party_invited
 signal friend_hello_requested(friend_id: String)
 signal all_friends_hello_requested
+signal save_requested
+signal quit_requested
 signal modal_changed(is_open: bool)
 
 var root: Control
 var city_label: Label
 var objective_label: Label
+var collection_label: Label
 var prompt_label: Label
 var toast_label: Label
 var modal: PanelContainer
@@ -53,7 +56,7 @@ func _build_interface() -> void:
 
 	var info_panel := PanelContainer.new()
 	info_panel.position = Vector2(12, 12)
-	info_panel.size = Vector2(272, 68)
+	info_panel.size = Vector2(292, 82)
 	info_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.04, 0.07, 0.12, 0.88), Color("#e9b85d")))
 	root.add_child(info_panel)
 	var info_box := VBoxContainer.new()
@@ -67,9 +70,13 @@ func _build_interface() -> void:
 	objective_label.add_theme_font_size_override("font_size", 13)
 	objective_label.add_theme_color_override("font_color", Color("#d6e6e8"))
 	info_box.add_child(objective_label)
+	collection_label = Label.new()
+	collection_label.add_theme_font_size_override("font_size", 12)
+	collection_label.add_theme_color_override("font_color", Color("#9ed8cf"))
+	info_box.add_child(collection_label)
 
 	var controls := Label.new()
-	controls.text = "WASD move  •  E interact  •  scroll zoom"
+	controls.text = "WASD move  •  E interact  •  C cards  •  scroll zoom"
 	controls.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	controls.anchor_left = 1.0
 	controls.anchor_right = 1.0
@@ -120,7 +127,7 @@ func _build_interface() -> void:
 	modal.anchor_bottom = 1.0
 	modal.offset_left = -235
 	modal.offset_right = 235
-	modal.offset_top = -226
+	modal.offset_top = -246
 	modal.offset_bottom = -18
 	modal.mouse_filter = Control.MOUSE_FILTER_STOP
 	modal.add_theme_stylebox_override("panel", _panel_style(Color(0.045, 0.065, 0.105, 0.97), Color("#f0bd5d")))
@@ -165,6 +172,11 @@ func set_world(world_id: String) -> void:
 		objective_label.text = "Explore together or return to Shanghai."
 	else:
 		objective_label.text = "Meet Kent and Joey near the waterfront terminal."
+	update_collection_count()
+
+
+func update_collection_count() -> void:
+	collection_label.text = "COLLECTION  %d cards" % GameState.player_cards.size()
 
 
 func set_prompt(prompt: String) -> void:
@@ -262,6 +274,7 @@ func _confirm_trade(player_index: int, friend_index: int) -> void:
 	var collection_names: Array[String] = []
 	for card in GameState.player_cards:
 		collection_names.append(str(card.name))
+	update_collection_count()
 	_add_body("Your cards: %s" % ", ".join(collection_names))
 	_add_button("Back", func() -> void: show_friend_menu(current_friend_id, current_friend_name))
 
@@ -296,6 +309,65 @@ func show_landmark(title: String, description: String) -> void:
 	_add_heading(title.to_upper())
 	_add_body(description)
 	_add_button("Continue exploring", close_modal)
+	_open_modal()
+
+
+func show_collection() -> void:
+	_clear_modal()
+	_add_heading("YOUR CARD COLLECTION")
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	for card in GameState.player_cards:
+		grid.add_child(_make_card_tile(card))
+	modal_content.add_child(grid)
+	_add_button("Close collection", close_modal)
+	_open_modal()
+
+
+func _make_card_tile(card: Dictionary) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(132, 92)
+	panel.add_theme_stylebox_override("panel", _panel_style(Color("#172438"), Color("#526b80")))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 1)
+	panel.add_child(box)
+	var texture := GameState.get_card_texture(str(card.id))
+	if texture != null:
+		var image := TextureRect.new()
+		image.texture = texture
+		image.custom_minimum_size = Vector2(24, 30)
+		image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		box.add_child(image)
+	var name_label := Label.new()
+	name_label.text = str(card.name)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.add_theme_font_size_override("font_size", 13)
+	name_label.add_theme_color_override("font_color", Color("#fff0c0"))
+	box.add_child(name_label)
+	var rarity_label := Label.new()
+	rarity_label.text = str(card.rarity)
+	rarity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rarity_label.add_theme_font_size_override("font_size", 11)
+	rarity_label.add_theme_color_override("font_color", Color("#9ed8cf"))
+	box.add_child(rarity_label)
+	return panel
+
+
+func show_pause_menu() -> void:
+	_clear_modal()
+	_add_heading("PAUSED")
+	_add_body("Progress is saved locally on this Mac.")
+	_add_button("Resume", close_modal)
+	_add_button("View card collection", show_collection)
+	_add_button("Save now", func() -> void:
+		close_modal()
+		save_requested.emit()
+	)
+	_add_button("Quit game", func() -> void: quit_requested.emit())
 	_open_modal()
 
 

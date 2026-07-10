@@ -20,6 +20,8 @@ func _ready() -> void:
 	hud.party_invited.connect(_on_party_invited)
 	hud.friend_hello_requested.connect(_on_friend_hello)
 	hud.all_friends_hello_requested.connect(_on_all_friends_hello)
+	hud.save_requested.connect(_on_save_requested)
+	hud.quit_requested.connect(_on_quit_requested)
 	hud.modal_changed.connect(_on_modal_changed)
 	travel_cutscene.finished.connect(_on_travel_finished)
 	position_save_timer = Timer.new()
@@ -31,6 +33,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if current_world != null:
+		current_world.update_companion_trail(player.global_position)
 	if current_world == null or travel_in_progress or hud.is_modal_open():
 		hud.set_prompt("")
 		return
@@ -42,10 +46,19 @@ func _process(_delta: float) -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if not event.pressed or event.echo:
+		return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F8:
 		GameState.reset_progress()
 		_load_world("shanghai", false)
 		hud.show_toast("Personal save reset. You are back in Shanghai.")
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("collection") and not hud.is_modal_open() and not travel_in_progress:
+		hud.show_collection()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_cancel") and not hud.is_modal_open() and not travel_in_progress:
+		hud.show_pause_menu()
+		get_viewport().set_input_as_handled()
 
 
 func _load_world(world_id: String, arriving: bool, restore_saved_position: bool = false) -> void:
@@ -125,6 +138,18 @@ func _on_all_friends_hello() -> void:
 
 func _on_landmark_info(title: String, description: String) -> void:
 	hud.show_landmark(title, description)
+
+
+func _on_save_requested() -> void:
+	_save_current_position()
+	GameState.save_game()
+	hud.show_toast("Progress saved on this Mac.")
+
+
+func _on_quit_requested() -> void:
+	_save_current_position()
+	GameState.save_game()
+	get_tree().quit()
 
 
 func _on_modal_changed(is_open: bool) -> void:

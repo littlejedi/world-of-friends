@@ -27,3 +27,7 @@ func _ready() -> void:
 	if modal_preview == "trade":
 		main.hud.show_friend_menu("kent", "Kent")
 		main.hud._trade_card()
+	elif modal_preview == "collection":
+		main.hud.show_collection()
+	elif modal_preview == "pause":
+		main.hud.show_pause_menu()

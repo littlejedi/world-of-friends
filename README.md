@@ -25,8 +25,9 @@ Controls:
 
 - `WASD` / arrow keys — move
 - `E` / Space — interact
+- `C` — view card collection
 - Mouse wheel — zoom
-- Escape — close a conversation
+- Escape — close a conversation or open the pause menu
 - `F8` — reset the development save
 
 ## Validate
@@ -40,3 +41,13 @@ Godot stores the personal game save in `user://world_of_friends_save.json`.
 Optional personal card images can be placed under ignored `private_assets/cards/` using the card ID as the filename—for example `spark_mouse.png`. PNG, JPEG, and WebP are supported. The same files can alternatively live under the Godot user-data `cards/` directory.
 
 See [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for the approved baseline and [docs/PROGRESS.md](docs/PROGRESS.md) for saved implementation checkpoints.
+
+## Build the Mac application
+
+Godot's installed Universal template produces a native Apple Silicon and Intel application:
+
+```sh
+godot --headless --path . --export-release "macOS (Universal)" "builds/World of Friends.app"
+```
+
+The unsigned personal build is written to `builds/World of Friends.app`; `builds/` is intentionally ignored by Git. The current release build is approximately 177 MB because it contains both processor architectures.

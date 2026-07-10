@@ -62,6 +62,10 @@ func _run() -> void:
 	GameState.invite_friends()
 	main.current_world.refresh_friend_following()
 	check(main.current_world.friends[0].follow_target == main.player, "Invited friends follow the player")
+	for step in range(18):
+		main.current_world.update_companion_trail(Vector3(float(step) * 0.42, 0.08, 3.0))
+	check(main.current_world.companion_trail.size() > 10, "Companion breadcrumb trail records the player's route")
+	check(main.current_world.friends[0].using_follow_point, "Companions follow breadcrumb points around corners")
 
 	var original_player_card := str(GameState.player_cards[1].id)
 	var original_kent_card := str(GameState.friend_cards.kent[1].id)
@@ -73,6 +77,14 @@ func _run() -> void:
 	main.hud._trade_card()
 	await get_tree().process_frame
 	check(main.hud.modal_content.find_children("*", "OptionButton", true, false).size() == 2, "Trade UI exposes both card selectors")
+	main.hud.close_modal()
+	main.hud.show_collection()
+	await get_tree().process_frame
+	check(main.hud.modal_content.find_children("*", "PanelContainer", true, false).size() == GameState.player_cards.size(), "Collection viewer displays every owned card")
+	main.hud.close_modal()
+	main.hud.show_pause_menu()
+	await get_tree().process_frame
+	check(main.hud.modal_content.find_children("*", "Button", true, false).size() == 4, "Pause menu exposes resume, collection, save, and quit actions")
 	main.hud.close_modal()
 
 	main._on_travel_finished("shanghai")

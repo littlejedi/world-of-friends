@@ -7,6 +7,7 @@ signal friend_hello_requested(friend_id: String)
 signal all_friends_hello_requested
 signal save_requested
 signal quit_requested
+signal ambient_audio_toggle_requested
 signal modal_changed(is_open: bool)
 
 var root: Control
@@ -363,6 +364,10 @@ func show_pause_menu() -> void:
 	_add_body("Progress is saved locally on this Mac.")
 	_add_button("Resume", close_modal)
 	_add_button("View card collection", show_collection)
+	_add_button("Ambient sound: %s" % ("On" if GameState.ambient_audio_enabled else "Off"), func() -> void:
+		ambient_audio_toggle_requested.emit()
+		show_pause_menu()
+	)
 	_add_button("Save now", func() -> void:
 		close_modal()
 		save_requested.emit()

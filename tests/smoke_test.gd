@@ -36,6 +36,14 @@ func _run() -> void:
 	check(main.current_world.get_node_or_null("HuangpuRiver") != null, "Shanghai contains animated river water")
 	check(main.current_world.get_node_or_null("HuangpuRiverBoat") != null, "Shanghai river traffic is active")
 	check(main.current_world.get_node_or_null("ShanghaiBirds") != null, "Shanghai has ambient bird movement")
+	check(main.current_world.get_node_or_null("ShanghaiWalkerA") != null, "Shanghai has ambient pedestrians")
+	var shanghai_audio: AmbientAudio = main.current_world.get_node("AmbientAudio")
+	check(shanghai_audio.stream is AudioStreamWAV, "Shanghai ambience is synthesized as a browser-safe WAV loop")
+	check((shanghai_audio.stream as AudioStreamWAV).data.size() > 300000, "Shanghai ambience contains generated stereo audio")
+	main._on_ambient_audio_toggle()
+	check(not GameState.ambient_audio_enabled and not shanghai_audio.playback_enabled, "Ambient audio can be muted and persisted")
+	main._on_ambient_audio_toggle()
+	check(GameState.ambient_audio_enabled and shanghai_audio.playback_enabled, "Ambient audio can be restored")
 	check(main.current_world.get_node_or_null("WukangMansionPlaque") != null, "Shanghai landmarks can be inspected")
 	main.current_world.get_node("WukangMansionPlaque").interact(main.player)
 	check(main.hud.is_modal_open(), "Inspecting a landmark opens its information panel")
@@ -64,6 +72,7 @@ func _run() -> void:
 	check(main.current_world.get_node_or_null("ElliottBay") != null, "Seattle contains animated bay water")
 	check(main.current_world.get_node_or_null("ElliottBayFerry") != null, "Seattle ferry traffic is active")
 	check(main.current_world.get_node_or_null("SeattleGulls") != null, "Seattle has ambient gull movement")
+	check(main.current_world.get_node_or_null("SeattleWalkerA") != null, "Seattle has ambient pedestrians")
 	check(main.current_world.friends.size() == 2, "Kent and Joey appear in Seattle")
 	main.hud.close_modal()
 	main.current_world.wave_friend("kent")
@@ -94,7 +103,7 @@ func _run() -> void:
 	main.hud.close_modal()
 	main.hud.show_pause_menu()
 	await get_tree().process_frame
-	check(main.hud.modal_content.find_children("*", "Button", true, false).size() == 4, "Pause menu exposes resume, collection, save, and quit actions")
+	check(main.hud.modal_content.find_children("*", "Button", true, false).size() == 5, "Pause menu exposes resume, collection, audio, save, and quit actions")
 	main.hud.close_modal()
 
 	main._on_travel_finished("shanghai")
@@ -103,7 +112,9 @@ func _run() -> void:
 	check(main.current_world.friends.size() == 2, "Kent and Joey travel back to Shanghai")
 
 	GameState.reset_progress()
+	main.current_world.stop_ambient_audio()
 	main.queue_free()
+	await get_tree().process_frame
 	await get_tree().process_frame
 	if failures.is_empty():
 		print("SMOKE TEST COMPLETE: all checks passed")

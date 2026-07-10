@@ -57,6 +57,10 @@ collection={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"physical_keycode":67)]
 }
+audio_toggle={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":77)]
+}
 
 [physics]
 

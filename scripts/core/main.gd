@@ -22,6 +22,7 @@ func _ready() -> void:
 	hud.all_friends_hello_requested.connect(_on_all_friends_hello)
 	hud.save_requested.connect(_on_save_requested)
 	hud.quit_requested.connect(_on_quit_requested)
+	hud.ambient_audio_toggle_requested.connect(_on_ambient_audio_toggle)
 	hud.modal_changed.connect(_on_modal_changed)
 	travel_cutscene.finished.connect(_on_travel_finished)
 	position_save_timer = Timer.new()
@@ -56,6 +57,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("collection") and not hud.is_modal_open() and not travel_in_progress:
 		hud.show_collection()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("audio_toggle") and not travel_in_progress:
+		_on_ambient_audio_toggle()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_cancel") and not hud.is_modal_open() and not travel_in_progress:
 		hud.show_pause_menu()
 		get_viewport().set_input_as_handled()
@@ -63,6 +67,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _load_world(world_id: String, arriving: bool, restore_saved_position: bool = false) -> void:
 	if current_world != null:
+		current_world.stop_ambient_audio()
 		current_world.free()
 	current_world = WorldScript.new()
 	current_world.name = world_id.capitalize()
@@ -149,7 +154,17 @@ func _on_save_requested() -> void:
 func _on_quit_requested() -> void:
 	_save_current_position()
 	GameState.save_game()
+	if current_world != null:
+		current_world.stop_ambient_audio()
 	get_tree().quit()
+
+
+func _on_ambient_audio_toggle() -> void:
+	var enabled := not GameState.ambient_audio_enabled
+	GameState.set_ambient_audio_enabled(enabled)
+	if current_world != null:
+		current_world.set_ambient_audio_enabled(enabled)
+	hud.show_toast("Ambient sound %s." % ("on" if enabled else "off"))
 
 
 func _on_modal_changed(is_open: bool) -> void:
@@ -165,4 +180,6 @@ func _save_current_position() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		_save_current_position()
+		if current_world != null:
+			current_world.stop_ambient_audio()
 		get_tree().quit()

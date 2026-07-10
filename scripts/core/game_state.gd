@@ -9,6 +9,7 @@ var player_cards: Array = []
 var friend_cards: Dictionary = {}
 var world_positions: Dictionary = {}
 var card_texture_cache: Dictionary = {}
+var ambient_audio_enabled: bool = true
 
 
 func _ready() -> void:
@@ -21,6 +22,7 @@ func defaults() -> Dictionary:
 		"has_arrived_seattle": false,
 		"friends_in_party": false,
 		"world_positions": {},
+		"ambient_audio_enabled": true,
 		"player_cards": [
 			{"id": "spark_mouse", "name": "Spark Mouse", "rarity": "Rare"},
 			{"id": "harbor_otter", "name": "Harbor Otter", "rarity": "Common"},
@@ -47,6 +49,7 @@ func apply_data(data: Dictionary) -> void:
 	player_cards = data.get("player_cards", fallback.player_cards).duplicate(true)
 	friend_cards = data.get("friend_cards", fallback.friend_cards).duplicate(true)
 	world_positions = data.get("world_positions", fallback.world_positions).duplicate(true)
+	ambient_audio_enabled = bool(data.get("ambient_audio_enabled", fallback.ambient_audio_enabled))
 
 
 func load_game() -> void:
@@ -74,6 +77,7 @@ func save_game() -> void:
 		"has_arrived_seattle": has_arrived_seattle,
 		"friends_in_party": friends_in_party,
 		"world_positions": world_positions,
+		"ambient_audio_enabled": ambient_audio_enabled,
 		"player_cards": player_cards,
 		"friend_cards": friend_cards
 	}
@@ -87,6 +91,11 @@ func set_world(world_id: String) -> void:
 
 func invite_friends() -> void:
 	friends_in_party = true
+	save_game()
+
+
+func set_ambient_audio_enabled(enabled: bool) -> void:
+	ambient_audio_enabled = enabled
 	save_game()
 
 

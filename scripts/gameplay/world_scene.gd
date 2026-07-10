@@ -12,11 +12,13 @@ const LandmarkScript = preload("res://scripts/gameplay/landmark_interactable.gd"
 const WaterScript = preload("res://scripts/art/water_surface.gd")
 const AmbientMoverScript = preload("res://scripts/art/ambient_mover.gd")
 const RotationAnimatorScript = preload("res://scripts/art/rotation_animator.gd")
+const AmbientAudioScript = preload("res://scripts/art/ambient_audio.gd")
 
 var world_id: String = "shanghai"
 var player: Node3D
 var friends: Array[FriendNPC] = []
 var companion_trail: Array[Vector3] = []
+var ambient_audio: AmbientAudio
 
 
 func build(new_world_id: String, player_node: Node3D) -> void:
@@ -93,6 +95,16 @@ func wave_all_friends() -> void:
 		friend.wave()
 
 
+func set_ambient_audio_enabled(enabled: bool) -> void:
+	if ambient_audio != null:
+		ambient_audio.set_enabled(enabled)
+
+
+func stop_ambient_audio() -> void:
+	if ambient_audio != null:
+		ambient_audio.shutdown()
+
+
 func _build_environment() -> void:
 	var world_environment := WorldEnvironment.new()
 	world_environment.name = "WorldEnvironment"
@@ -117,6 +129,9 @@ func _build_environment() -> void:
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 45.0
 	add_child(sun)
+	ambient_audio = AmbientAudioScript.new()
+	ambient_audio.setup(world_id, GameState.ambient_audio_enabled)
+	add_child(ambient_audio)
 
 
 func _build_ground(base_color: Color) -> void:
@@ -150,6 +165,8 @@ func _build_shanghai() -> void:
 	_add_landmark("Xuhui Riverside", "A broad riverside promenade for walking, resting, and looking across Shanghai's changing waterfront.", Vector3(-4.0, 0, 9.1))
 	_add_ambient_boat("HuangpuRiverBoat", Vector3(-20, 0.18, 14.4), Vector3(20, 0.18, 14.4), Color("#d47a4d"), 18.0)
 	_add_bird_flock("ShanghaiBirds", Vector3(-18, 7.2, 1.0), Vector3(20, 7.2, 1.0), 22.0)
+	_add_street_walker("ShanghaiWalkerA", Vector3(-18, 0.02, -0.8), Vector3(-7, 0.02, -0.8), Color("#4f7eb8"), 0.88, 13.0)
+	_add_street_walker("ShanghaiWalkerB", Vector3(-12, 0.02, 4.0), Vector3(-2, 0.02, 4.0), Color("#b85f59"), 0.84, 15.0)
 
 
 func _build_wukang_mansion(origin: Vector3) -> void:
@@ -210,6 +227,8 @@ func _build_seattle() -> void:
 	_add_landmark("Seattle Great Wheel", "A glowing waterfront wheel overlooking Elliott Bay and the distant sea.", Vector3(3.4, 0, 8.7))
 	_add_ambient_boat("ElliottBayFerry", Vector3(-21, 0.22, 14.8), Vector3(21, 0.22, 14.8), Color("#e8eee8"), 20.0)
 	_add_bird_flock("SeattleGulls", Vector3(20, 7.6, 2.0), Vector3(-20, 7.6, 2.0), 19.0)
+	_add_street_walker("SeattleWalkerA", Vector3(-18, 0.02, -1.0), Vector3(-7, 0.02, -1.0), Color("#d28b45"), 0.90, 14.0)
+	_add_street_walker("SeattleWalkerB", Vector3(-5, 0.02, 8.4), Vector3(6, 0.02, 8.4), Color("#5a8b75"), 0.86, 16.0)
 
 
 func _build_pike_place(origin: Vector3) -> void:
@@ -341,6 +360,29 @@ func _add_bird_flock(flock_name: String, start: Vector3, end: Vector3, duration:
 		left_wing.rotation_degrees.z = -18
 		var right_wing := Art.add_box(bird, "WingR", Vector3(0.16, 0, 0), Vector3(0.34, 0.05, 0.12), Color("#354052"), false)
 		right_wing.rotation_degrees.z = 18
+
+
+func _add_street_walker(
+	walker_name: String,
+	start: Vector3,
+	end: Vector3,
+	shirt_color: Color,
+	height_scale: float,
+	duration: float
+) -> void:
+	var walker := AmbientMoverScript.new()
+	walker.name = walker_name
+	walker.setup(start, end, duration, 0.025)
+	add_child(walker)
+	Art.add_character_visual(
+		walker,
+		height_scale,
+		shirt_color,
+		Color("#3d4c62"),
+		Color("#dca77c"),
+		Color("#3a3035"),
+		false
+	)
 
 
 func _on_ticket_requested(destination: String) -> void:

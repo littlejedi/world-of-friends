@@ -57,8 +57,17 @@
 - Browser console checked with no warnings or errors.
 - Automated coverage expanded for boats, birds, ferry, and wheel rotation.
 
+## Checkpoint 5 — City ambience and street life
+
+- Seamless, original Shanghai and Seattle ambience synthesized into browser-safe stereo WAV loops at runtime.
+- Persistent ambient-sound preference controlled by `M` or the pause menu.
+- Non-interactive pedestrians following neighborhood-specific sidewalk routes in both cities.
+- Explicit audio teardown during world changes and application exit.
+- Headless-aware playback so automated validation remains resource-clean.
+- Automated coverage expanded for pedestrians, generated audio, persistence, and pause-menu controls.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.
-- Add ambient audio and more neighborhood-specific street life.
+- Add footstep and interaction effects after the final character animation cadence is chosen.
 - Decide whether to publish the private browser build to an access-controlled host.

@@ -10,6 +10,8 @@ const TicketOfficeScript = preload("res://scripts/gameplay/ticket_office.gd")
 const FriendScript = preload("res://scripts/gameplay/friend_npc.gd")
 const LandmarkScript = preload("res://scripts/gameplay/landmark_interactable.gd")
 const WaterScript = preload("res://scripts/art/water_surface.gd")
+const AmbientMoverScript = preload("res://scripts/art/ambient_mover.gd")
+const RotationAnimatorScript = preload("res://scripts/art/rotation_animator.gd")
 
 var world_id: String = "shanghai"
 var player: Node3D
@@ -146,6 +148,8 @@ func _build_shanghai() -> void:
 	_add_landmark("Wukang Mansion", "A stylized version of Shanghai's distinctive flatiron-shaped apartment building, framed by the leafy streets of Xuhui.", Vector3(-6.3, 0, -6.7))
 	_add_landmark("Oriental Pearl Tower", "The glowing spheres of this skyline landmark mark the Pudong side of the Huangpu River.", Vector3(12.4, 0, -8.2))
 	_add_landmark("Xuhui Riverside", "A broad riverside promenade for walking, resting, and looking across Shanghai's changing waterfront.", Vector3(-4.0, 0, 9.1))
+	_add_ambient_boat("HuangpuRiverBoat", Vector3(-20, 0.18, 14.4), Vector3(20, 0.18, 14.4), Color("#d47a4d"), 18.0)
+	_add_bird_flock("ShanghaiBirds", Vector3(-18, 7.2, 1.0), Vector3(20, 7.2, 1.0), 22.0)
 
 
 func _build_wukang_mansion(origin: Vector3) -> void:
@@ -204,6 +208,8 @@ func _build_seattle() -> void:
 	_add_landmark("Space Needle", "Seattle's space-age observation tower rises above the northern side of this postcard world.", Vector3(10.7, 0, -7.4))
 	_add_landmark("Seattle Aquarium", "A waterfront aquarium on Pier 59, represented here by its glassy marine-blue facade.", Vector3(-5.4, 0, 3.8))
 	_add_landmark("Seattle Great Wheel", "A glowing waterfront wheel overlooking Elliott Bay and the distant sea.", Vector3(3.4, 0, 8.7))
+	_add_ambient_boat("ElliottBayFerry", Vector3(-21, 0.22, 14.8), Vector3(21, 0.22, 14.8), Color("#e8eee8"), 20.0)
+	_add_bird_flock("SeattleGulls", Vector3(20, 7.6, 2.0), Vector3(-20, 7.6, 2.0), 19.0)
 
 
 func _build_pike_place(origin: Vector3) -> void:
@@ -259,16 +265,21 @@ func _build_great_wheel(origin: Vector3) -> void:
 	wheel.name = "SeattleGreatWheel"
 	wheel.position = origin
 	add_child(wheel)
+	var rotor := RotationAnimatorScript.new()
+	rotor.name = "WheelRotor"
+	rotor.position.y = 3.5
+	rotor.setup(0.075)
+	wheel.add_child(rotor)
 	var radius := 3.0
 	for index in range(16):
 		var angle := TAU * float(index) / 16.0
-		var segment := Art.add_box(wheel, "Rim", Vector3(cos(angle) * radius, 3.5 + sin(angle) * radius, 0), Vector3(0.20, 1.25, 0.28), Color("#e9e4d7"))
+		var segment := Art.add_box(rotor, "Rim", Vector3(cos(angle) * radius, sin(angle) * radius, 0), Vector3(0.20, 1.25, 0.28), Color("#e9e4d7"))
 		segment.rotation_degrees.z = -rad_to_deg(angle)
 		if index % 2 == 0:
-			Art.add_box(wheel, "Cabin", Vector3(cos(angle) * radius, 3.5 + sin(angle) * radius, 0), Vector3(0.55, 0.55, 0.65), Color("#c84f52"))
-		var spoke := Art.add_box(wheel, "Spoke", Vector3(cos(angle) * radius * 0.5, 3.5 + sin(angle) * radius * 0.5, 0), Vector3(0.07, radius, 0.07), Color("#d6d4ca"), false)
+			Art.add_box(rotor, "Cabin", Vector3(cos(angle) * radius, sin(angle) * radius, 0), Vector3(0.55, 0.55, 0.65), Color("#c84f52"))
+		var spoke := Art.add_box(rotor, "Spoke", Vector3(cos(angle) * radius * 0.5, sin(angle) * radius * 0.5, 0), Vector3(0.07, radius, 0.07), Color("#d6d4ca"), false)
 		spoke.rotation_degrees.z = -rad_to_deg(angle)
-	Art.add_cylinder(wheel, "Axle", Vector3(0, 3.5, 0), 0.33, 1.0, Color("#bf554f"), 10).rotation_degrees.x = 90
+	Art.add_cylinder(rotor, "Axle", Vector3.ZERO, 0.33, 1.0, Color("#bf554f"), 10).rotation_degrees.x = 90
 	Art.add_static_box(wheel, "Base", Vector3(0, 0.5, 0), Vector3(4.0, 1.0, 1.5), Color("#6d6f70"), false)
 	Art.add_label(wheel, "GREAT WHEEL", Vector3(0, 7.5, 0), 28, Color("#fff5df"))
 
@@ -298,6 +309,38 @@ func _add_landmark(title: String, description: String, location: Vector3) -> voi
 	landmark.position = location
 	landmark.info_requested.connect(_on_landmark_info)
 	add_child(landmark)
+
+
+func _add_ambient_boat(
+	boat_name: String,
+	start: Vector3,
+	end: Vector3,
+	accent: Color,
+	duration: float
+) -> void:
+	var boat := AmbientMoverScript.new()
+	boat.name = boat_name
+	boat.setup(start, end, duration, 0.035)
+	add_child(boat)
+	Art.add_box(boat, "Hull", Vector3(0, 0.24, 0), Vector3(3.4, 0.42, 1.1), Color("#30485a"), false)
+	Art.add_box(boat, "Deck", Vector3(0, 0.58, 0), Vector3(2.4, 0.48, 0.9), accent, false)
+	Art.add_box(boat, "Cabin", Vector3(0.25, 0.96, 0), Vector3(1.3, 0.42, 0.72), Color("#d8f0ed"), false)
+	Art.add_box(boat, "Window", Vector3(0.25, 1.0, -0.38), Vector3(0.72, 0.18, 0.04), Color("#66b6cb"), false)
+
+
+func _add_bird_flock(flock_name: String, start: Vector3, end: Vector3, duration: float) -> void:
+	var flock := AmbientMoverScript.new()
+	flock.name = flock_name
+	flock.setup(start, end, duration, 0.18)
+	add_child(flock)
+	for offset in [Vector3.ZERO, Vector3(-0.8, -0.25, 0.3), Vector3(-1.5, 0.2, -0.2)]:
+		var bird := Node3D.new()
+		bird.position = offset
+		flock.add_child(bird)
+		var left_wing := Art.add_box(bird, "WingL", Vector3(-0.16, 0, 0), Vector3(0.34, 0.05, 0.12), Color("#354052"), false)
+		left_wing.rotation_degrees.z = -18
+		var right_wing := Art.add_box(bird, "WingR", Vector3(0.16, 0, 0), Vector3(0.34, 0.05, 0.12), Color("#354052"), false)
+		right_wing.rotation_degrees.z = 18
 
 
 func _on_ticket_requested(destination: String) -> void:

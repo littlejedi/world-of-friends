@@ -45,8 +45,20 @@
 - Exported binary launched headlessly without project/runtime errors.
 - Automated suite expanded to 29 checks for breadcrumb following, collection, and pause actions.
 
+## Checkpoint 4 — Living waterfronts and browser validation
+
+- Moving Huangpu river boat and Elliott Bay ferry.
+- Ambient Shanghai birds and Seattle gulls.
+- Continuously rotating Great Wheel with a stationary base and label.
+- Single-threaded WebGL 2 export preset using the Compatibility renderer.
+- Successful 36 MB browser build with tests/build output excluded.
+- Local in-app browser validation of WebAssembly loading and 2.5D rendering.
+- `C` collection and Escape close interactions verified in the browser build.
+- Browser console checked with no warnings or errors.
+- Automated coverage expanded for boats, birds, ferry, and wheel rotation.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.
-- Add more street life, ambient audio, and landmark-specific animation.
-- Produce a browser export and measure its download/runtime profile.
+- Add ambient audio and more neighborhood-specific street life.
+- Decide whether to publish the private browser build to an access-controlled host.

@@ -11,6 +11,7 @@ The current checkpoint is a playable procedural prototype. It includes:
 - Ticket offices, two-way shuttle cutscene, and persistent city state.
 - Kent and Joey, group invitation, companion following, wave reactions, and selectable card trading.
 - Interactive landmark plaques and animated pixel-water surfaces.
+- Moving river boats, Seattle ferry traffic, bird flocks, and a rotating Great Wheel.
 - Local JSON save data, including per-world position, with `F8` available as a development reset.
 
 ## Run
@@ -51,3 +52,15 @@ godot --headless --path . --export-release "macOS (Universal)" "builds/World of 
 ```
 
 The unsigned personal build is written to `builds/World of Friends.app`; `builds/` is intentionally ignored by Git. The current release build is approximately 177 MB because it contains both processor architectures.
+
+## Build the browser version
+
+The single-threaded WebGL 2 build is generated with:
+
+```sh
+mkdir -p builds/web
+godot --headless --path . --export-release "Web" "builds/web/index.html"
+python3 -m http.server 8060 --bind 127.0.0.1 --directory builds/web
+```
+
+Open `http://127.0.0.1:8060/` while the temporary server is running. The current browser package is approximately 36 MB and does not require cross-origin-isolation headers.

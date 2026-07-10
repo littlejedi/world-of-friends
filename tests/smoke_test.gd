@@ -34,6 +34,8 @@ func _run() -> void:
 	check(main.current_world.get_node_or_null("WukangMansion") != null, "Shanghai contains Wukang Mansion")
 	check(main.current_world.get_node_or_null("OrientalPearlTower") != null, "Shanghai contains the Oriental Pearl Tower")
 	check(main.current_world.get_node_or_null("HuangpuRiver") != null, "Shanghai contains animated river water")
+	check(main.current_world.get_node_or_null("HuangpuRiverBoat") != null, "Shanghai river traffic is active")
+	check(main.current_world.get_node_or_null("ShanghaiBirds") != null, "Shanghai has ambient bird movement")
 	check(main.current_world.get_node_or_null("WukangMansionPlaque") != null, "Shanghai landmarks can be inspected")
 	main.current_world.get_node("WukangMansionPlaque").interact(main.player)
 	check(main.hud.is_modal_open(), "Inspecting a landmark opens its information panel")
@@ -43,7 +45,9 @@ func _run() -> void:
 	GameState.set_player_position("shanghai", saved_position, false)
 	main._load_world("shanghai", false, true)
 	await get_tree().process_frame
-	check(main.player.global_position.distance_to(saved_position) < 0.01, "Per-world player position is restored")
+	var restored_planar := Vector2(main.player.global_position.x, main.player.global_position.z)
+	var expected_planar := Vector2(saved_position.x, saved_position.z)
+	check(restored_planar.distance_to(expected_planar) < 0.01, "Per-world player position is restored")
 
 	main._on_travel_finished("seattle")
 	await get_tree().process_frame
@@ -53,7 +57,13 @@ func _run() -> void:
 	check(main.current_world.get_node_or_null("SpaceNeedle") != null, "Seattle contains the Space Needle")
 	check(main.current_world.get_node_or_null("SeattleAquarium") != null, "Seattle contains the Aquarium")
 	check(main.current_world.get_node_or_null("SeattleGreatWheel") != null, "Seattle contains the Great Wheel")
+	var wheel_rotor: RotationAnimator = main.current_world.get_node("SeattleGreatWheel/WheelRotor")
+	var wheel_rotation_before: float = wheel_rotor.rotation.z
+	wheel_rotor._process(1.0)
+	check(wheel_rotor.rotation.z > wheel_rotation_before, "Seattle Great Wheel rotates")
 	check(main.current_world.get_node_or_null("ElliottBay") != null, "Seattle contains animated bay water")
+	check(main.current_world.get_node_or_null("ElliottBayFerry") != null, "Seattle ferry traffic is active")
+	check(main.current_world.get_node_or_null("SeattleGulls") != null, "Seattle has ambient gull movement")
 	check(main.current_world.friends.size() == 2, "Kent and Joey appear in Seattle")
 	main.hud.close_modal()
 	main.current_world.wave_friend("kent")

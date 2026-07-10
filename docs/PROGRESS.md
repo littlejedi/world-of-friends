@@ -77,6 +77,18 @@
 - Browser rendering, unified mute UI, and console behavior revalidated after the HUD overlap fix.
 - Universal macOS 0.6.0 build exported and launched successfully on Apple Silicon.
 
+## Checkpoint 7 — City guides and landmark discovery
+
+- Persistent landmark discovery state shared across travel and future sessions.
+- Separate Shanghai and Seattle guide entries with concise wayfinding hints.
+- `G` guide overlay with discovered and not-yet-visited landmark cards.
+- New-discovery treatment when a landmark plaque is inspected for the first time.
+- HUD guide completion shown alongside the player's card count.
+- City guide access added to the expanded pause menu.
+- Automated coverage expanded to 52 checks for guide metadata, disk persistence, discovery deduplication, city-specific progress, and guide UI.
+- Browser guide layout and full pause menu validated at the target resolution with no console warnings or errors.
+- Universal macOS 0.7.0 build exported and launched successfully on Apple Silicon.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.

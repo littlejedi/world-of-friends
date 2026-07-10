@@ -63,6 +63,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("collection") and not hud.is_modal_open() and not travel_in_progress:
 		hud.show_collection()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("city_guide") and not hud.is_modal_open() and not travel_in_progress:
+		hud.show_city_guide()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("audio_toggle") and not travel_in_progress:
 		_on_ambient_audio_toggle()
 		get_viewport().set_input_as_handled()
@@ -155,8 +158,9 @@ func _on_player_step() -> void:
 	gameplay_audio.play_footstep()
 
 
-func _on_landmark_info(title: String, description: String) -> void:
-	hud.show_landmark(title, description)
+func _on_landmark_info(landmark_id: String, title: String, description: String) -> void:
+	var is_new := GameState.discover_landmark(landmark_id)
+	hud.show_landmark(title, description, is_new)
 
 
 func _on_save_requested() -> void:

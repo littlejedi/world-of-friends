@@ -1,15 +1,17 @@
 class_name LandmarkInteractable
 extends Node3D
 
-signal info_requested(title: String, description: String)
+signal info_requested(landmark_id: String, title: String, description: String)
 
 const Art = preload("res://scripts/art/procedural_factory.gd")
 
 var landmark_title: String = "Landmark"
+var landmark_id: String = "landmark"
 var description: String = ""
 
 
-func setup(title: String, body: String) -> void:
+func setup(id: String, title: String, body: String) -> void:
+	landmark_id = id
 	landmark_title = title
 	description = body
 
@@ -27,4 +29,4 @@ func get_interaction_prompt() -> String:
 
 
 func interact(_player: Node3D) -> void:
-	info_requested.emit(landmark_title, description)
+	info_requested.emit(landmark_id, landmark_title, description)

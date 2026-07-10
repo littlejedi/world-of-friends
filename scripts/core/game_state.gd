@@ -1,6 +1,19 @@
 extends Node
 
 const SAVE_PATH := "user://world_of_friends_save.json"
+const LANDMARK_GUIDE := {
+	"shanghai": [
+		{"id": "wukang_mansion", "title": "Wukang Mansion", "hint": "Follow the tree-lined western street."},
+		{"id": "oriental_pearl", "title": "Oriental Pearl Tower", "hint": "Look for the pink spheres beyond the eastern road."},
+		{"id": "xuhui_riverside", "title": "Xuhui Riverside", "hint": "Walk south to the Huangpu River promenade."}
+	],
+	"seattle": [
+		{"id": "pike_place", "title": "Pike Place Market", "hint": "Follow the western street toward the red market sign."},
+		{"id": "space_needle", "title": "Space Needle", "hint": "Look north-east for the tall observation tower."},
+		{"id": "seattle_aquarium", "title": "Seattle Aquarium", "hint": "Head toward the blue building beside the waterfront."},
+		{"id": "great_wheel", "title": "Seattle Great Wheel", "hint": "Follow the bay promenade to the rotating wheel."}
+	]
+}
 
 var current_world: String = "shanghai"
 var has_arrived_seattle: bool = false
@@ -10,6 +23,7 @@ var friend_cards: Dictionary = {}
 var world_positions: Dictionary = {}
 var card_texture_cache: Dictionary = {}
 var ambient_audio_enabled: bool = true
+var discovered_landmarks: Array = []
 
 
 func _ready() -> void:
@@ -23,6 +37,7 @@ func defaults() -> Dictionary:
 		"friends_in_party": false,
 		"world_positions": {},
 		"ambient_audio_enabled": true,
+		"discovered_landmarks": [],
 		"player_cards": [
 			{"id": "spark_mouse", "name": "Spark Mouse", "rarity": "Rare"},
 			{"id": "harbor_otter", "name": "Harbor Otter", "rarity": "Common"},
@@ -50,6 +65,7 @@ func apply_data(data: Dictionary) -> void:
 	friend_cards = data.get("friend_cards", fallback.friend_cards).duplicate(true)
 	world_positions = data.get("world_positions", fallback.world_positions).duplicate(true)
 	ambient_audio_enabled = bool(data.get("ambient_audio_enabled", fallback.ambient_audio_enabled))
+	discovered_landmarks = data.get("discovered_landmarks", fallback.discovered_landmarks).duplicate()
 
 
 func load_game() -> void:
@@ -78,6 +94,7 @@ func save_game() -> void:
 		"friends_in_party": friends_in_party,
 		"world_positions": world_positions,
 		"ambient_audio_enabled": ambient_audio_enabled,
+		"discovered_landmarks": discovered_landmarks,
 		"player_cards": player_cards,
 		"friend_cards": friend_cards
 	}
@@ -97,6 +114,30 @@ func invite_friends() -> void:
 func set_ambient_audio_enabled(enabled: bool) -> void:
 	ambient_audio_enabled = enabled
 	save_game()
+
+
+func discover_landmark(landmark_id: String) -> bool:
+	if discovered_landmarks.has(landmark_id):
+		return false
+	discovered_landmarks.append(landmark_id)
+	save_game()
+	return true
+
+
+func is_landmark_discovered(landmark_id: String) -> bool:
+	return discovered_landmarks.has(landmark_id)
+
+
+func get_landmark_entries(world_id: String) -> Array:
+	return LANDMARK_GUIDE.get(world_id, [])
+
+
+func get_discovery_count(world_id: String) -> int:
+	var count := 0
+	for entry in get_landmark_entries(world_id):
+		if is_landmark_discovered(str(entry.id)):
+			count += 1
+	return count
 
 
 func mark_seattle_arrival() -> bool:

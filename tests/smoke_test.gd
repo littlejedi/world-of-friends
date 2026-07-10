@@ -19,9 +19,11 @@ func _run() -> void:
 	GameState.reset_progress()
 	var disk_position := Vector3(1.25, 0.08, -3.5)
 	GameState.set_player_position("shanghai", disk_position)
+	GameState.discover_landmark("wukang_mansion")
 	GameState.apply_data(GameState.defaults())
 	GameState.load_game()
 	check(GameState.get_player_position("shanghai").distance_to(disk_position) < 0.01, "Player position survives a disk save and reload")
+	check(GameState.is_landmark_discovered("wukang_mansion"), "Landmark discoveries survive a disk save and reload")
 	GameState.reset_progress()
 	var scene_resource: PackedScene = load("res://scenes/main.tscn")
 	var main := scene_resource.instantiate()
@@ -30,6 +32,7 @@ func _run() -> void:
 	await get_tree().process_frame
 
 	check(main.current_world != null, "Main world is created")
+	check(GameState.get_landmark_entries("shanghai").size() == 3 and GameState.get_landmark_entries("seattle").size() == 4, "City guide metadata covers both worlds")
 	check(main.gameplay_audio != null, "Gameplay sound system is created")
 	check(main.gameplay_audio.footstep_streams.size() == 2, "Alternating footsteps are synthesized")
 	main._on_player_step()
@@ -53,6 +56,14 @@ func _run() -> void:
 	check(main.current_world.get_node_or_null("WukangMansionPlaque") != null, "Shanghai landmarks can be inspected")
 	main.current_world.get_node("WukangMansionPlaque").interact(main.player)
 	check(main.hud.is_modal_open(), "Inspecting a landmark opens its information panel")
+	check(GameState.is_landmark_discovered("wukang_mansion") and GameState.get_discovery_count("shanghai") == 1, "Inspecting a landmark records its discovery")
+	main.hud.close_modal()
+	main.hud.show_city_guide()
+	await get_tree().process_frame
+	check(main.hud.modal_content.find_children("Guide_*", "PanelContainer", true, false).size() == 3, "Shanghai city guide displays all landmark entries")
+	main.hud.close_modal()
+	main.current_world.get_node("WukangMansionPlaque").interact(main.player)
+	check(GameState.get_discovery_count("shanghai") == 1, "Revisiting a landmark does not duplicate progress")
 	main.hud.close_modal()
 	check(main.player != null and main.camera_rig != null, "Player and diagonal camera are active")
 	var saved_position := Vector3(-2.4, 0.08, -2.2)
@@ -85,6 +96,9 @@ func _run() -> void:
 	check(main.current_world.get_node_or_null("SeattleWalkerA") != null, "Seattle has ambient pedestrians")
 	check(main.current_world.friends.size() == 2, "Kent and Joey appear in Seattle")
 	main.hud.close_modal()
+	main.current_world.get_node("SeattleAquariumPlaque").interact(main.player)
+	check(GameState.is_landmark_discovered("seattle_aquarium") and GameState.get_discovery_count("seattle") == 1, "Seattle discoveries use their own guide progress")
+	main.hud.close_modal()
 	main.current_world.wave_friend("kent")
 	check(main.current_world.friends[0].wave_tween != null, "Saying hello triggers a friend reaction")
 
@@ -113,7 +127,7 @@ func _run() -> void:
 	main.hud.close_modal()
 	main.hud.show_pause_menu()
 	await get_tree().process_frame
-	check(main.hud.modal_content.find_children("*", "Button", true, false).size() == 5, "Pause menu exposes resume, collection, audio, save, and quit actions")
+	check(main.hud.modal_content.find_children("*", "Button", true, false).size() == 6, "Pause menu exposes resume, collection, guide, audio, save, and quit actions")
 	main.hud.close_modal()
 
 	main._on_travel_finished("shanghai")

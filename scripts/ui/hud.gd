@@ -22,6 +22,7 @@ var current_friend_id: String = ""
 var current_friend_name: String = ""
 var toast_serial: int = 0
 var toast_timer: Timer
+var current_world_id: String = "shanghai"
 
 
 func _ready() -> void:
@@ -77,7 +78,7 @@ func _build_interface() -> void:
 	info_box.add_child(collection_label)
 
 	var controls := Label.new()
-	controls.text = "WASD move  •  E interact  •  C cards\nM sound  •  scroll zoom"
+	controls.text = "WASD move  •  E interact  •  C cards\nG guide  •  M sound  •  scroll zoom"
 	controls.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	controls.anchor_left = 1.0
 	controls.anchor_right = 1.0
@@ -128,7 +129,7 @@ func _build_interface() -> void:
 	modal.anchor_bottom = 1.0
 	modal.offset_left = -235
 	modal.offset_right = 235
-	modal.offset_top = -246
+	modal.offset_top = -330
 	modal.offset_bottom = -18
 	modal.mouse_filter = Control.MOUSE_FILTER_STOP
 	modal.add_theme_stylebox_override("panel", _panel_style(Color(0.045, 0.065, 0.105, 0.97), Color("#f0bd5d")))
@@ -166,6 +167,7 @@ func _button_style(background: Color, border: Color) -> StyleBoxFlat:
 
 
 func set_world(world_id: String) -> void:
+	current_world_id = world_id
 	city_label.text = "SHANGHAI" if world_id == "shanghai" else "SEATTLE"
 	if world_id == "shanghai":
 		objective_label.text = "Explore the city or visit the ticket office for Seattle."
@@ -173,11 +175,17 @@ func set_world(world_id: String) -> void:
 		objective_label.text = "Explore together or return to Shanghai."
 	else:
 		objective_label.text = "Meet Kent and Joey near the waterfront terminal."
-	update_collection_count()
+	update_progress()
 
 
 func update_collection_count() -> void:
-	collection_label.text = "COLLECTION  %d cards" % GameState.player_cards.size()
+	update_progress()
+
+
+func update_progress() -> void:
+	var discovered := GameState.get_discovery_count(current_world_id)
+	var total := GameState.get_landmark_entries(current_world_id).size()
+	collection_label.text = "CARDS  %d   •   GUIDE  %d/%d" % [GameState.player_cards.size(), discovered, total]
 
 
 func set_prompt(prompt: String) -> void:
@@ -305,12 +313,59 @@ func _add_card_picker(title: String, cards: Array) -> OptionButton:
 	return picker
 
 
-func show_landmark(title: String, description: String) -> void:
+func show_landmark(title: String, description: String, is_new: bool = false) -> void:
 	_clear_modal()
+	if is_new:
+		_add_kicker("NEW LANDMARK DISCOVERED")
 	_add_heading(title.to_upper())
 	_add_body(description)
+	update_progress()
 	_add_button("Continue exploring", close_modal)
 	_open_modal()
+
+
+func show_city_guide() -> void:
+	_clear_modal()
+	_add_heading("CITY GUIDE  •  %s" % current_world_id.to_upper())
+	var entries := GameState.get_landmark_entries(current_world_id)
+	_add_body("Landmarks discovered: %d of %d" % [GameState.get_discovery_count(current_world_id), entries.size()])
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	for entry in entries:
+		grid.add_child(_make_guide_tile(entry, GameState.is_landmark_discovered(str(entry.id))))
+	modal_content.add_child(grid)
+	_add_button("Close guide", close_modal)
+	_open_modal()
+
+
+func _make_guide_tile(entry: Dictionary, discovered: bool) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.name = "Guide_%s" % str(entry.id)
+	panel.custom_minimum_size = Vector2(202, 66)
+	var border := Color("#d7ae5f") if discovered else Color("#56687a")
+	panel.add_theme_stylebox_override("panel", _panel_style(Color("#172438"), border))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 1)
+	panel.add_child(box)
+	var status := Label.new()
+	status.text = "[x]  DISCOVERED" if discovered else "[ ]  NOT YET VISITED"
+	status.add_theme_font_size_override("font_size", 10)
+	status.add_theme_color_override("font_color", Color("#f2c96d") if discovered else Color("#91a4b1"))
+	box.add_child(status)
+	var title := Label.new()
+	title.text = str(entry.title)
+	title.add_theme_font_size_override("font_size", 13)
+	title.add_theme_color_override("font_color", Color("#fff0c0"))
+	box.add_child(title)
+	var hint := Label.new()
+	hint.text = str(entry.hint)
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 9)
+	hint.add_theme_color_override("font_color", Color("#b8cbd0"))
+	box.add_child(hint)
+	return panel
 
 
 func show_collection() -> void:
@@ -364,6 +419,7 @@ func show_pause_menu() -> void:
 	_add_body("Progress is saved locally on this device.")
 	_add_button("Resume", close_modal)
 	_add_button("View card collection", show_collection)
+	_add_button("Open city guide", show_city_guide)
 	_add_button("Sound: %s" % ("On" if GameState.ambient_audio_enabled else "Off"), func() -> void:
 		ambient_audio_toggle_requested.emit()
 		show_pause_menu()
@@ -386,6 +442,14 @@ func _add_heading(text: String) -> void:
 	label.text = text
 	label.add_theme_font_size_override("font_size", 21)
 	label.add_theme_color_override("font_color", Color("#ffdf8d"))
+	modal_content.add_child(label)
+
+
+func _add_kicker(text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_color_override("font_color", Color("#f2c96d"))
 	modal_content.add_child(label)
 
 

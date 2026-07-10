@@ -3,7 +3,7 @@ extends Node3D
 
 signal travel_requested(destination: String)
 signal friend_conversation_requested(friend_id: String, display_name: String)
-signal landmark_info_requested(title: String, description: String)
+signal landmark_info_requested(landmark_id: String, title: String, description: String)
 
 const Art = preload("res://scripts/art/procedural_factory.gd")
 const TicketOfficeScript = preload("res://scripts/gameplay/ticket_office.gd")
@@ -160,9 +160,9 @@ func _build_shanghai() -> void:
 	add_child(office)
 	for tree_position in [Vector3(-18, 0, -2), Vector3(-15, 0, -1), Vector3(-8, 0, -1), Vector3(-5, 0, -7), Vector3(-4, 0, 3), Vector3(-10, 0, 5), Vector3(17, 0, 2)]:
 		Art.add_tree(self, tree_position, 1.0)
-	_add_landmark("Wukang Mansion", "A stylized version of Shanghai's distinctive flatiron-shaped apartment building, framed by the leafy streets of Xuhui.", Vector3(-6.3, 0, -6.7))
-	_add_landmark("Oriental Pearl Tower", "The glowing spheres of this skyline landmark mark the Pudong side of the Huangpu River.", Vector3(12.4, 0, -8.2))
-	_add_landmark("Xuhui Riverside", "A broad riverside promenade for walking, resting, and looking across Shanghai's changing waterfront.", Vector3(-4.0, 0, 9.1))
+	_add_landmark("wukang_mansion", "Wukang Mansion", "A stylized version of Shanghai's distinctive flatiron-shaped apartment building, framed by the leafy streets of Xuhui.", Vector3(-6.3, 0, -6.7))
+	_add_landmark("oriental_pearl", "Oriental Pearl Tower", "The glowing spheres of this skyline landmark mark the Pudong side of the Huangpu River.", Vector3(12.4, 0, -8.2))
+	_add_landmark("xuhui_riverside", "Xuhui Riverside", "A broad riverside promenade for walking, resting, and looking across Shanghai's changing waterfront.", Vector3(-4.0, 0, 9.1))
 	_add_ambient_boat("HuangpuRiverBoat", Vector3(-20, 0.18, 14.4), Vector3(20, 0.18, 14.4), Color("#d47a4d"), 18.0)
 	_add_bird_flock("ShanghaiBirds", Vector3(-18, 7.2, 1.0), Vector3(20, 7.2, 1.0), 22.0)
 	_add_street_walker("ShanghaiWalkerA", Vector3(-18, 0.02, -0.8), Vector3(-7, 0.02, -0.8), Color("#4f7eb8"), 0.88, 13.0)
@@ -221,10 +221,10 @@ func _build_seattle() -> void:
 	add_child(office)
 	for tree_position in [Vector3(-18, 0, -1), Vector3(-15, 0, 2), Vector3(-5, 0, -8), Vector3(5, 0, -9), Vector3(18, 0, -1), Vector3(15, 0, 3)]:
 		Art.add_tree(self, tree_position, 1.08)
-	_add_landmark("Pike Place Market", "A compact market district filled with produce stands, flowers, warm signs, and steep streets leading toward the water.", Vector3(-6.6, 0, -6.3))
-	_add_landmark("Space Needle", "Seattle's space-age observation tower rises above the northern side of this postcard world.", Vector3(10.7, 0, -7.4))
-	_add_landmark("Seattle Aquarium", "A waterfront aquarium on Pier 59, represented here by its glassy marine-blue facade.", Vector3(-5.4, 0, 3.8))
-	_add_landmark("Seattle Great Wheel", "A glowing waterfront wheel overlooking Elliott Bay and the distant sea.", Vector3(3.4, 0, 8.7))
+	_add_landmark("pike_place", "Pike Place Market", "A compact market district filled with produce stands, flowers, warm signs, and steep streets leading toward the water.", Vector3(-6.6, 0, -6.3))
+	_add_landmark("space_needle", "Space Needle", "Seattle's space-age observation tower rises above the northern side of this postcard world.", Vector3(10.7, 0, -7.4))
+	_add_landmark("seattle_aquarium", "Seattle Aquarium", "A waterfront aquarium on Pier 59, represented here by its glassy marine-blue facade.", Vector3(-5.4, 0, 3.8))
+	_add_landmark("great_wheel", "Seattle Great Wheel", "A glowing waterfront wheel overlooking Elliott Bay and the distant sea.", Vector3(3.4, 0, 8.7))
 	_add_ambient_boat("ElliottBayFerry", Vector3(-21, 0.22, 14.8), Vector3(21, 0.22, 14.8), Color("#e8eee8"), 20.0)
 	_add_bird_flock("SeattleGulls", Vector3(20, 7.6, 2.0), Vector3(-20, 7.6, 2.0), 19.0)
 	_add_street_walker("SeattleWalkerA", Vector3(-18, 0.02, -1.0), Vector3(-7, 0.02, -1.0), Color("#d28b45"), 0.90, 14.0)
@@ -322,9 +322,9 @@ func _build_friends() -> void:
 	refresh_friend_following()
 
 
-func _add_landmark(title: String, description: String, location: Vector3) -> void:
+func _add_landmark(landmark_id: String, title: String, description: String, location: Vector3) -> void:
 	var landmark := LandmarkScript.new()
-	landmark.setup(title, description)
+	landmark.setup(landmark_id, title, description)
 	landmark.position = location
 	landmark.info_requested.connect(_on_landmark_info)
 	add_child(landmark)
@@ -393,5 +393,5 @@ func _on_friend_conversation(friend_id: String, display_name: String) -> void:
 	friend_conversation_requested.emit(friend_id, display_name)
 
 
-func _on_landmark_info(title: String, description: String) -> void:
-	landmark_info_requested.emit(title, description)
+func _on_landmark_info(landmark_id: String, title: String, description: String) -> void:
+	landmark_info_requested.emit(landmark_id, title, description)

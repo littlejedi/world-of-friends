@@ -313,12 +313,15 @@ func _add_card_picker(title: String, cards: Array) -> OptionButton:
 	return picker
 
 
-func show_landmark(title: String, description: String, is_new: bool = false) -> void:
+func show_landmark(title: String, description: String, is_new: bool = false, reward: Dictionary = {}) -> void:
 	_clear_modal()
 	if is_new:
 		_add_kicker("NEW LANDMARK DISCOVERED")
 	_add_heading(title.to_upper())
 	_add_body(description)
+	if bool(reward.get("ok", false)):
+		_add_kicker("CITY GUIDE COMPLETE")
+		_add_body("Souvenir card earned: %s" % str(reward.card.name))
 	update_progress()
 	_add_button("Continue exploring", close_modal)
 	_open_modal()
@@ -329,6 +332,9 @@ func show_city_guide() -> void:
 	_add_heading("CITY GUIDE  •  %s" % current_world_id.to_upper())
 	var entries := GameState.get_landmark_entries(current_world_id)
 	_add_body("Landmarks discovered: %d of %d" % [GameState.get_discovery_count(current_world_id), entries.size()])
+	if GameState.has_claimed_city_reward(current_world_id):
+		var souvenir := GameState.get_city_guide_reward(current_world_id)
+		_add_kicker("GUIDE COMPLETE  -  %s EARNED" % str(souvenir.name).to_upper())
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 8)

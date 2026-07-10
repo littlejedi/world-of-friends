@@ -89,6 +89,19 @@
 - Browser guide layout and full pause menu validated at the target resolution with no console warnings or errors.
 - Universal macOS 0.7.0 build exported and launched successfully on Apple Silicon.
 
+## Checkpoint 8 — City guide souvenir rewards
+
+- Shanghai Skyline souvenir card awarded when all Shanghai landmarks are discovered.
+- Seattle Sound souvenir card awarded when all Seattle landmarks are discovered.
+- One-time reward claims persisted alongside discoveries and protected from duplicate awards.
+- Guide-completion treatment added to landmark panels and completed guide overlays.
+- Existing arrival chime reused as immediate completion feedback.
+- Souvenir cards appear in the existing collection and participate in the data-driven card system.
+- Older saves with already-completed guides can claim their newly introduced souvenir on the next landmark visit.
+- Automated coverage expanded to 59 checks for incomplete guides, both rewards, persistence, duplicate prevention, and save migration.
+- Web package exported successfully; interactive localhost QA was deferred because the current sandbox could not open its test port.
+- Universal macOS 0.8.0 build exported and launched successfully on Apple Silicon.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.

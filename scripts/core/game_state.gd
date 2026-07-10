@@ -14,6 +14,10 @@ const LANDMARK_GUIDE := {
 		{"id": "great_wheel", "title": "Seattle Great Wheel", "hint": "Follow the bay promenade to the rotating wheel."}
 	]
 }
+const CITY_GUIDE_REWARDS := {
+	"shanghai": {"id": "shanghai_skyline", "name": "Shanghai Skyline", "rarity": "Souvenir"},
+	"seattle": {"id": "seattle_sound", "name": "Seattle Sound", "rarity": "Souvenir"}
+}
 
 var current_world: String = "shanghai"
 var has_arrived_seattle: bool = false
@@ -24,6 +28,7 @@ var world_positions: Dictionary = {}
 var card_texture_cache: Dictionary = {}
 var ambient_audio_enabled: bool = true
 var discovered_landmarks: Array = []
+var claimed_city_rewards: Array = []
 
 
 func _ready() -> void:
@@ -38,6 +43,7 @@ func defaults() -> Dictionary:
 		"world_positions": {},
 		"ambient_audio_enabled": true,
 		"discovered_landmarks": [],
+		"claimed_city_rewards": [],
 		"player_cards": [
 			{"id": "spark_mouse", "name": "Spark Mouse", "rarity": "Rare"},
 			{"id": "harbor_otter", "name": "Harbor Otter", "rarity": "Common"},
@@ -66,6 +72,7 @@ func apply_data(data: Dictionary) -> void:
 	world_positions = data.get("world_positions", fallback.world_positions).duplicate(true)
 	ambient_audio_enabled = bool(data.get("ambient_audio_enabled", fallback.ambient_audio_enabled))
 	discovered_landmarks = data.get("discovered_landmarks", fallback.discovered_landmarks).duplicate()
+	claimed_city_rewards = data.get("claimed_city_rewards", fallback.claimed_city_rewards).duplicate()
 
 
 func load_game() -> void:
@@ -95,6 +102,7 @@ func save_game() -> void:
 		"world_positions": world_positions,
 		"ambient_audio_enabled": ambient_audio_enabled,
 		"discovered_landmarks": discovered_landmarks,
+		"claimed_city_rewards": claimed_city_rewards,
 		"player_cards": player_cards,
 		"friend_cards": friend_cards
 	}
@@ -138,6 +146,29 @@ func get_discovery_count(world_id: String) -> int:
 		if is_landmark_discovered(str(entry.id)):
 			count += 1
 	return count
+
+
+func claim_city_guide_reward(world_id: String) -> Dictionary:
+	var entries := get_landmark_entries(world_id)
+	if entries.is_empty() or get_discovery_count(world_id) < entries.size():
+		return {"ok": false, "reason": "incomplete"}
+	if claimed_city_rewards.has(world_id):
+		return {"ok": false, "reason": "claimed"}
+	var reward: Dictionary = CITY_GUIDE_REWARDS.get(world_id, {}).duplicate(true)
+	if reward.is_empty():
+		return {"ok": false, "reason": "missing"}
+	claimed_city_rewards.append(world_id)
+	player_cards.append(reward)
+	save_game()
+	return {"ok": true, "card": reward}
+
+
+func has_claimed_city_reward(world_id: String) -> bool:
+	return claimed_city_rewards.has(world_id)
+
+
+func get_city_guide_reward(world_id: String) -> Dictionary:
+	return CITY_GUIDE_REWARDS.get(world_id, {})
 
 
 func mark_seattle_arrival() -> bool:

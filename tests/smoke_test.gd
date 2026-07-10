@@ -20,10 +20,14 @@ func _run() -> void:
 	var disk_position := Vector3(1.25, 0.08, -3.5)
 	GameState.set_player_position("shanghai", disk_position)
 	GameState.discover_landmark("wukang_mansion")
+	GameState.discover_landmark("oriental_pearl")
+	GameState.discover_landmark("xuhui_riverside")
+	GameState.claim_city_guide_reward("shanghai")
 	GameState.apply_data(GameState.defaults())
 	GameState.load_game()
 	check(GameState.get_player_position("shanghai").distance_to(disk_position) < 0.01, "Player position survives a disk save and reload")
 	check(GameState.is_landmark_discovered("wukang_mansion"), "Landmark discoveries survive a disk save and reload")
+	check(GameState.has_claimed_city_reward("shanghai") and str(GameState.player_cards.back().id) == "shanghai_skyline", "City souvenir rewards survive a disk save and reload")
 	GameState.reset_progress()
 	var scene_resource: PackedScene = load("res://scenes/main.tscn")
 	var main := scene_resource.instantiate()
@@ -33,6 +37,7 @@ func _run() -> void:
 
 	check(main.current_world != null, "Main world is created")
 	check(GameState.get_landmark_entries("shanghai").size() == 3 and GameState.get_landmark_entries("seattle").size() == 4, "City guide metadata covers both worlds")
+	check(not bool(GameState.claim_city_guide_reward("shanghai").ok), "An incomplete city guide cannot claim its souvenir")
 	check(main.gameplay_audio != null, "Gameplay sound system is created")
 	check(main.gameplay_audio.footstep_streams.size() == 2, "Alternating footsteps are synthesized")
 	main._on_player_step()
@@ -64,6 +69,14 @@ func _run() -> void:
 	main.hud.close_modal()
 	main.current_world.get_node("WukangMansionPlaque").interact(main.player)
 	check(GameState.get_discovery_count("shanghai") == 1, "Revisiting a landmark does not duplicate progress")
+	main.hud.close_modal()
+	main.current_world.get_node("OrientalPearlTowerPlaque").interact(main.player)
+	main.hud.close_modal()
+	main.current_world.get_node("XuhuiRiversidePlaque").interact(main.player)
+	check(GameState.has_claimed_city_reward("shanghai") and str(GameState.player_cards.back().id) == "shanghai_skyline", "Completing Shanghai awards its souvenir card")
+	main.hud.close_modal()
+	main.current_world.get_node("XuhuiRiversidePlaque").interact(main.player)
+	check(GameState.player_cards.size() == 4, "Shanghai souvenir can only be awarded once")
 	main.hud.close_modal()
 	check(main.player != null and main.camera_rig != null, "Player and diagonal camera are active")
 	var saved_position := Vector3(-2.4, 0.08, -2.2)
@@ -99,6 +112,11 @@ func _run() -> void:
 	main.current_world.get_node("SeattleAquariumPlaque").interact(main.player)
 	check(GameState.is_landmark_discovered("seattle_aquarium") and GameState.get_discovery_count("seattle") == 1, "Seattle discoveries use their own guide progress")
 	main.hud.close_modal()
+	for plaque_name in ["PikePlaceMarketPlaque", "SpaceNeedlePlaque", "SeattleGreatWheelPlaque"]:
+		main.current_world.get_node(plaque_name).interact(main.player)
+		main.hud.close_modal()
+	check(GameState.has_claimed_city_reward("seattle") and str(GameState.player_cards.back().id) == "seattle_sound", "Completing Seattle awards its souvenir card")
+	check(GameState.player_cards.size() == 5, "Both city souvenirs join the card collection")
 	main.current_world.wave_friend("kent")
 	check(main.current_world.friends[0].wave_tween != null, "Saying hello triggers a friend reaction")
 
@@ -134,6 +152,13 @@ func _run() -> void:
 	await get_tree().process_frame
 	check(main.current_world.world_id == "shanghai", "Return travel loads Shanghai")
 	check(main.current_world.friends.size() == 2, "Kent and Joey travel back to Shanghai")
+	GameState.claimed_city_rewards.erase("shanghai")
+	for card_index in range(GameState.player_cards.size() - 1, -1, -1):
+		if str(GameState.player_cards[card_index].id) == "shanghai_skyline":
+			GameState.player_cards.remove_at(card_index)
+	main.current_world.get_node("WukangMansionPlaque").interact(main.player)
+	check(GameState.has_claimed_city_reward("shanghai"), "A guide completed in an older save can claim its new souvenir")
+	main.hud.close_modal()
 
 	GameState.reset_progress()
 	main.current_world.stop_ambient_audio()

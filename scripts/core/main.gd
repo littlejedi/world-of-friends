@@ -160,7 +160,10 @@ func _on_player_step() -> void:
 
 func _on_landmark_info(landmark_id: String, title: String, description: String) -> void:
 	var is_new := GameState.discover_landmark(landmark_id)
-	hud.show_landmark(title, description, is_new)
+	var reward := GameState.claim_city_guide_reward(current_world.world_id)
+	if bool(reward.get("ok", false)):
+		gameplay_audio.play_arrival()
+	hud.show_landmark(title, description, is_new, reward)
 
 
 func _on_save_requested() -> void:

@@ -14,6 +14,7 @@ The current checkpoint is a playable procedural prototype. It includes:
 - Moving river boats, Seattle ferry traffic, bird flocks, pedestrians, and a rotating Great Wheel.
 - Original city ambience, alternating footsteps, interaction chimes, and shuttle audio synthesized at runtime, with a persistent sound preference.
 - Persistent city guides with landmark hints and separate Shanghai/Seattle discovery progress.
+- One-time Shanghai and Seattle souvenir cards awarded for completing each city guide.
 - Local JSON save data, including per-world position, with `F8` available as a development reset.
 
 ## Run

@@ -141,3 +141,10 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Godot and private local game assets
+.godot/
+builds/
+private_assets/
+*.tmp
+.DS_Store

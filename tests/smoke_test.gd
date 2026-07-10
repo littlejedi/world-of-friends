@@ -30,6 +30,12 @@ func _run() -> void:
 	await get_tree().process_frame
 
 	check(main.current_world != null, "Main world is created")
+	check(main.gameplay_audio != null, "Gameplay sound system is created")
+	check(main.gameplay_audio.footstep_streams.size() == 2, "Alternating footsteps are synthesized")
+	main._on_player_step()
+	check(main.gameplay_audio.footstep_player.stream is AudioStreamWAV, "Player steps trigger a generated sound")
+	main.gameplay_audio.play_interaction()
+	check(main.gameplay_audio.effect_player.stream == main.gameplay_audio.interaction_stream, "Interactions trigger a generated chime")
 	check(main.current_world.world_id == "shanghai", "A new game starts in Shanghai")
 	check(main.current_world.get_node_or_null("WukangMansion") != null, "Shanghai contains Wukang Mansion")
 	check(main.current_world.get_node_or_null("OrientalPearlTower") != null, "Shanghai contains the Oriental Pearl Tower")
@@ -41,9 +47,9 @@ func _run() -> void:
 	check(shanghai_audio.stream is AudioStreamWAV, "Shanghai ambience is synthesized as a browser-safe WAV loop")
 	check((shanghai_audio.stream as AudioStreamWAV).data.size() > 300000, "Shanghai ambience contains generated stereo audio")
 	main._on_ambient_audio_toggle()
-	check(not GameState.ambient_audio_enabled and not shanghai_audio.playback_enabled, "Ambient audio can be muted and persisted")
+	check(not GameState.ambient_audio_enabled and not shanghai_audio.playback_enabled and not main.gameplay_audio.playback_enabled, "All sound can be muted and persisted")
 	main._on_ambient_audio_toggle()
-	check(GameState.ambient_audio_enabled and shanghai_audio.playback_enabled, "Ambient audio can be restored")
+	check(GameState.ambient_audio_enabled and shanghai_audio.playback_enabled and main.gameplay_audio.playback_enabled, "All sound can be restored")
 	check(main.current_world.get_node_or_null("WukangMansionPlaque") != null, "Shanghai landmarks can be inspected")
 	main.current_world.get_node("WukangMansionPlaque").interact(main.player)
 	check(main.hud.is_modal_open(), "Inspecting a landmark opens its information panel")
@@ -57,9 +63,13 @@ func _run() -> void:
 	var expected_planar := Vector2(saved_position.x, saved_position.z)
 	check(restored_planar.distance_to(expected_planar) < 0.01, "Per-world player position is restored")
 
+	main._begin_travel("seattle")
+	check(main.gameplay_audio.travel_active and main.gameplay_audio.travel_player.stream == main.gameplay_audio.travel_stream, "Shuttle travel starts its engine loop")
+	main.travel_cutscene.visible = false
 	main._on_travel_finished("seattle")
 	await get_tree().process_frame
 	await get_tree().process_frame
+	check(not main.gameplay_audio.travel_active and main.gameplay_audio.effect_player.stream == main.gameplay_audio.arrival_stream, "Shuttle arrival stops the engine and plays a chime")
 	check(main.current_world.world_id == "seattle", "Travel loads Seattle")
 	check(main.current_world.get_node_or_null("PikePlaceMarket") != null, "Seattle contains Pike Place Market")
 	check(main.current_world.get_node_or_null("SpaceNeedle") != null, "Seattle contains the Space Needle")
@@ -113,6 +123,7 @@ func _run() -> void:
 
 	GameState.reset_progress()
 	main.current_world.stop_ambient_audio()
+	main.gameplay_audio.shutdown()
 	main.queue_free()
 	await get_tree().process_frame
 	await get_tree().process_frame

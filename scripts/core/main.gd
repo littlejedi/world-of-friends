@@ -1,6 +1,7 @@
 extends Node3D
 
 const WorldScript = preload("res://scripts/gameplay/world_scene.gd")
+const GameplayAudioScript = preload("res://scripts/art/gameplay_audio.gd")
 
 @onready var world_root: Node3D = $WorldRoot
 @onready var player: PlayerCharacter = $Player
@@ -11,10 +12,15 @@ const WorldScript = preload("res://scripts/gameplay/world_scene.gd")
 var current_world: WorldScene
 var travel_in_progress: bool = false
 var position_save_timer: Timer
+var gameplay_audio: Node
 
 
 func _ready() -> void:
 	player.interact_requested.connect(_on_interact_requested)
+	player.step_taken.connect(_on_player_step)
+	gameplay_audio = GameplayAudioScript.new()
+	gameplay_audio.setup(GameState.ambient_audio_enabled)
+	add_child(gameplay_audio)
 	camera_rig.set_target(player)
 	hud.travel_confirmed.connect(_begin_travel)
 	hud.party_invited.connect(_on_party_invited)
@@ -95,6 +101,7 @@ func _on_interact_requested() -> void:
 		return
 	var target := current_world.get_closest_interactable(player.global_position)
 	if target != null and target.has_method("interact"):
+		gameplay_audio.play_interaction()
 		target.interact(player)
 
 
@@ -114,15 +121,18 @@ func _begin_travel(destination: String) -> void:
 	hud.set_prompt("")
 	_save_current_position()
 	GameState.save_game()
+	gameplay_audio.start_travel()
 	travel_cutscene.start_trip(GameState.current_world, destination)
 
 
 func _on_travel_finished(destination: String) -> void:
+	gameplay_audio.stop_travel()
 	GameState.set_world(destination)
 	_load_world(destination, true)
 	GameState.set_player_position(destination, player.global_position)
 	travel_in_progress = false
 	player.control_enabled = not hud.is_modal_open()
+	gameplay_audio.play_arrival()
 
 
 func _on_party_invited() -> void:
@@ -141,6 +151,10 @@ func _on_all_friends_hello() -> void:
 		current_world.wave_all_friends()
 
 
+func _on_player_step() -> void:
+	gameplay_audio.play_footstep()
+
+
 func _on_landmark_info(title: String, description: String) -> void:
 	hud.show_landmark(title, description)
 
@@ -156,6 +170,7 @@ func _on_quit_requested() -> void:
 	GameState.save_game()
 	if current_world != null:
 		current_world.stop_ambient_audio()
+	gameplay_audio.shutdown()
 	get_tree().quit()
 
 
@@ -164,7 +179,8 @@ func _on_ambient_audio_toggle() -> void:
 	GameState.set_ambient_audio_enabled(enabled)
 	if current_world != null:
 		current_world.set_ambient_audio_enabled(enabled)
-	hud.show_toast("Ambient sound %s." % ("on" if enabled else "off"))
+	gameplay_audio.set_enabled(enabled)
+	hud.show_toast("Sound %s." % ("on" if enabled else "off"))
 
 
 func _on_modal_changed(is_open: bool) -> void:
@@ -182,4 +198,6 @@ func _notification(what: int) -> void:
 		_save_current_position()
 		if current_world != null:
 			current_world.stop_ambient_audio()
+		if gameplay_audio != null:
+			gameplay_audio.shutdown()
 		get_tree().quit()

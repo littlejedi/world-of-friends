@@ -2,6 +2,7 @@ class_name PlayerCharacter
 extends CharacterBody3D
 
 signal interact_requested
+signal step_taken
 
 const Art = preload("res://scripts/art/procedural_factory.gd")
 
@@ -11,6 +12,7 @@ const Art = preload("res://scripts/art/procedural_factory.gd")
 var control_enabled: bool = true
 var visual: Node3D
 var walk_time: float = 0.0
+var footstep_cooldown: float = 0.0
 
 
 func _ready() -> void:
@@ -56,6 +58,13 @@ func _physics_process(delta: float) -> void:
 		visual.position.y = abs(sin(walk_time)) * 0.045
 	else:
 		visual.position.y = move_toward(visual.position.y, 0.0, delta * 0.4)
+	if movement.length_squared() > 0.01 and Vector2(velocity.x, velocity.z).length() > 0.8 and is_on_floor():
+		footstep_cooldown -= delta
+		if footstep_cooldown <= 0.0:
+			footstep_cooldown = 0.36
+			step_taken.emit()
+	else:
+		footstep_cooldown = 0.0
 	if control_enabled and Input.is_action_just_pressed("interact"):
 		interact_requested.emit()
 

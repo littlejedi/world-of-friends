@@ -66,8 +66,19 @@
 - Headless-aware playback so automated validation remains resource-clean.
 - Automated coverage expanded for pedestrians, generated audio, persistence, and pause-menu controls.
 
+## Checkpoint 6 — Gameplay sound feedback
+
+- Alternating synthesized footsteps tied to the player's walking cadence.
+- Original interaction and arrival chimes for landmarks, friends, ticket offices, and shuttle landings.
+- Seamless synthesized shuttle-engine loop during the space-travel cutscene.
+- The existing `M` preference now controls ambience and gameplay effects together.
+- Device-neutral pause copy and an expanded on-screen controls reminder.
+- Automated coverage expanded to 46 checks for generated effects, player-step wiring, shuttle audio state, and unified muting.
+- Browser rendering, unified mute UI, and console behavior revalidated after the HUD overlap fix.
+- Universal macOS 0.6.0 build exported and launched successfully on Apple Silicon.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.
-- Add footstep and interaction effects after the final character animation cadence is chosen.
+- Add surface-specific footstep variations after the final terrain materials are chosen.
 - Decide whether to publish the private browser build to an access-controlled host.

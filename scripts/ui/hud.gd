@@ -77,14 +77,14 @@ func _build_interface() -> void:
 	info_box.add_child(collection_label)
 
 	var controls := Label.new()
-	controls.text = "WASD move  •  E interact  •  C cards  •  scroll zoom"
+	controls.text = "WASD move  •  E interact  •  C cards\nM sound  •  scroll zoom"
 	controls.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	controls.anchor_left = 1.0
 	controls.anchor_right = 1.0
-	controls.offset_left = -340
+	controls.offset_left = -310
 	controls.offset_right = -12
 	controls.offset_top = 16
-	controls.offset_bottom = 40
+	controls.offset_bottom = 54
 	controls.add_theme_font_size_override("font_size", 11)
 	controls.add_theme_color_override("font_color", Color("#e8eff0"))
 	root.add_child(controls)
@@ -361,10 +361,10 @@ func _make_card_tile(card: Dictionary) -> PanelContainer:
 func show_pause_menu() -> void:
 	_clear_modal()
 	_add_heading("PAUSED")
-	_add_body("Progress is saved locally on this Mac.")
+	_add_body("Progress is saved locally on this device.")
 	_add_button("Resume", close_modal)
 	_add_button("View card collection", show_collection)
-	_add_button("Ambient sound: %s" % ("On" if GameState.ambient_audio_enabled else "Off"), func() -> void:
+	_add_button("Sound: %s" % ("On" if GameState.ambient_audio_enabled else "Off"), func() -> void:
 		ambient_audio_toggle_requested.emit()
 		show_pause_menu()
 	)

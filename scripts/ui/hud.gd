@@ -3,6 +3,8 @@ extends CanvasLayer
 
 signal travel_confirmed(destination: String)
 signal party_invited
+signal friend_hello_requested(friend_id: String)
+signal all_friends_hello_requested
 signal modal_changed(is_open: bool)
 
 var root: Control
@@ -38,7 +40,15 @@ func _build_interface() -> void:
 	var theme := Theme.new()
 	theme.default_font_size = 16
 	theme.set_color("font_color", "Label", Color("#fff8e8"))
-	theme.set_color("font_color", "Button", Color("#172033"))
+	for control_type in ["Button", "OptionButton"]:
+		theme.set_color("font_color", control_type, Color("#f4f7f3"))
+		theme.set_color("font_hover_color", control_type, Color("#fff0ae"))
+		theme.set_color("font_pressed_color", control_type, Color("#ffffff"))
+		theme.set_color("font_focus_color", control_type, Color("#fff0ae"))
+		theme.set_stylebox("normal", control_type, _button_style(Color("#1c2a40"), Color("#60738a")))
+		theme.set_stylebox("hover", control_type, _button_style(Color("#273b56"), Color("#e2b558")))
+		theme.set_stylebox("pressed", control_type, _button_style(Color("#354d69"), Color("#f2ca72")))
+		theme.set_stylebox("focus", control_type, _button_style(Color(0, 0, 0, 0), Color("#f2ca72")))
 	root.theme = theme
 
 	var info_panel := PanelContainer.new()
@@ -134,6 +144,19 @@ func _panel_style(background: Color, border: Color) -> StyleBoxFlat:
 	return style
 
 
+func _button_style(background: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = background
+	style.border_color = border
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(3)
+	style.content_margin_left = 8
+	style.content_margin_right = 8
+	style.content_margin_top = 4
+	style.content_margin_bottom = 4
+	return style
+
+
 func set_world(world_id: String) -> void:
 	city_label.text = "SHANGHAI" if world_id == "shanghai" else "SEATTLE"
 	if world_id == "shanghai":
@@ -193,6 +216,7 @@ func show_seattle_introduction() -> void:
 	_add_heading("WELCOME TO SEATTLE")
 	_add_body("Two friends are waiting near the waterfront terminal.\n\nKent: “Hello! You made it.”\nJoey: “Come explore Seattle with us!”")
 	_add_button("Say hello", func() -> void:
+		all_friends_hello_requested.emit()
 		show_toast("Kent and Joey wave hello.")
 		close_modal()
 	)
@@ -200,6 +224,7 @@ func show_seattle_introduction() -> void:
 
 
 func _show_hello() -> void:
+	friend_hello_requested.emit(current_friend_id)
 	_clear_modal()
 	_add_heading(current_friend_name.to_upper())
 	_add_body("You say hello. %s waves back enthusiastically." % current_friend_name)
@@ -217,15 +242,61 @@ func _invite_friends() -> void:
 
 
 func _trade_card() -> void:
-	var result := GameState.trade_first_cards(current_friend_id)
 	_clear_modal()
 	_add_heading("CARD TRADE")
+	_add_body("Choose one card from each collection.")
+	var player_picker := _add_card_picker("Your card", GameState.player_cards)
+	var available: Array = GameState.friend_cards.get(current_friend_id, [])
+	var friend_picker := _add_card_picker("%s's card" % current_friend_name, available)
+	_add_button("Confirm trade", func() -> void:
+		_confirm_trade(player_picker.selected, friend_picker.selected)
+	)
+	_add_button("Back", func() -> void: show_friend_menu(current_friend_id, current_friend_name))
+
+
+func _confirm_trade(player_index: int, friend_index: int) -> void:
+	var result := GameState.trade_cards(current_friend_id, player_index, friend_index)
+	_clear_modal()
+	_add_heading("TRADE COMPLETE" if bool(result.ok) else "TRADE UNAVAILABLE")
 	_add_body(str(result.message))
 	var collection_names: Array[String] = []
 	for card in GameState.player_cards:
 		collection_names.append(str(card.name))
 	_add_body("Your cards: %s" % ", ".join(collection_names))
 	_add_button("Back", func() -> void: show_friend_menu(current_friend_id, current_friend_name))
+
+
+func _add_card_picker(title: String, cards: Array) -> OptionButton:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	var label := Label.new()
+	label.text = title
+	label.custom_minimum_size.x = 112
+	label.add_theme_color_override("font_color", Color("#d9e8ea"))
+	row.add_child(label)
+	var picker := OptionButton.new()
+	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	picker.custom_minimum_size.y = 30
+	for index in range(cards.size()):
+		var card: Dictionary = cards[index]
+		picker.add_item("%s  ·  %s" % [card.name, card.rarity], index)
+		var texture := GameState.get_card_texture(str(card.id))
+		if texture != null:
+			picker.set_item_icon(index, texture)
+	if cards.is_empty():
+		picker.add_item("No cards available")
+		picker.disabled = true
+	row.add_child(picker)
+	modal_content.add_child(row)
+	return picker
+
+
+func show_landmark(title: String, description: String) -> void:
+	_clear_modal()
+	_add_heading(title.to_upper())
+	_add_body(description)
+	_add_button("Continue exploring", close_modal)
+	_open_modal()
 
 
 func _clear_modal() -> void:

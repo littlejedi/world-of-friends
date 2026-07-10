@@ -3,10 +3,13 @@ extends Node3D
 
 signal travel_requested(destination: String)
 signal friend_conversation_requested(friend_id: String, display_name: String)
+signal landmark_info_requested(title: String, description: String)
 
 const Art = preload("res://scripts/art/procedural_factory.gd")
 const TicketOfficeScript = preload("res://scripts/gameplay/ticket_office.gd")
 const FriendScript = preload("res://scripts/gameplay/friend_npc.gd")
+const LandmarkScript = preload("res://scripts/gameplay/landmark_interactable.gd")
+const WaterScript = preload("res://scripts/art/water_surface.gd")
 
 var world_id: String = "shanghai"
 var player: Node3D
@@ -46,6 +49,18 @@ func get_closest_interactable(from_position: Vector3, max_distance: float = 3.25
 func refresh_friend_following() -> void:
 	for friend in friends:
 		friend.set_follow_target(player if GameState.friends_in_party else null)
+
+
+func wave_friend(friend_id: String) -> void:
+	for friend in friends:
+		if friend.friend_id == friend_id:
+			friend.wave()
+			return
+
+
+func wave_all_friends() -> void:
+	for friend in friends:
+		friend.wave()
 
 
 func _build_environment() -> void:
@@ -100,6 +115,9 @@ func _build_shanghai() -> void:
 	add_child(office)
 	for tree_position in [Vector3(-18, 0, -2), Vector3(-15, 0, -1), Vector3(-8, 0, -1), Vector3(-5, 0, -7), Vector3(-4, 0, 3), Vector3(-10, 0, 5), Vector3(17, 0, 2)]:
 		Art.add_tree(self, tree_position, 1.0)
+	_add_landmark("Wukang Mansion", "A stylized version of Shanghai's distinctive flatiron-shaped apartment building, framed by the leafy streets of Xuhui.", Vector3(-6.3, 0, -6.7))
+	_add_landmark("Oriental Pearl Tower", "The glowing spheres of this skyline landmark mark the Pudong side of the Huangpu River.", Vector3(12.4, 0, -8.2))
+	_add_landmark("Xuhui Riverside", "A broad riverside promenade for walking, resting, and looking across Shanghai's changing waterfront.", Vector3(-4.0, 0, 9.1))
 
 
 func _build_wukang_mansion(origin: Vector3) -> void:
@@ -131,7 +149,11 @@ func _build_oriental_pearl(origin: Vector3) -> void:
 
 
 func _build_shanghai_riverside() -> void:
-	Art.add_box(self, "HuangpuRiver", Vector3(0, -0.05, 14.6), Vector3(48, 0.18, 6.4), Color("#4d8fa4"), false)
+	var water := WaterScript.new()
+	water.name = "HuangpuRiver"
+	water.position = Vector3(0, -0.05, 14.6)
+	water.setup(Vector2(48, 6.4), Color("#397c94"), Color("#8fd2d1"))
+	add_child(water)
 	Art.add_static_box(self, "RiversideRail", Vector3(0, 0.45, 11.6), Vector3(48, 0.9, 0.28), Color("#7b8991"), false)
 	Art.add_box(self, "Promenade", Vector3(0, 0.01, 9.8), Vector3(48, 0.05, 3.2), Color("#d7cbb0"), false)
 	Art.add_label(self, "XUHUI RIVERSIDE", Vector3(-8, 2.8, 10.3), 34, Color("#fff0cf"))
@@ -150,6 +172,10 @@ func _build_seattle() -> void:
 	add_child(office)
 	for tree_position in [Vector3(-18, 0, -1), Vector3(-15, 0, 2), Vector3(-5, 0, -8), Vector3(5, 0, -9), Vector3(18, 0, -1), Vector3(15, 0, 3)]:
 		Art.add_tree(self, tree_position, 1.08)
+	_add_landmark("Pike Place Market", "A compact market district filled with produce stands, flowers, warm signs, and steep streets leading toward the water.", Vector3(-6.6, 0, -6.3))
+	_add_landmark("Space Needle", "Seattle's space-age observation tower rises above the northern side of this postcard world.", Vector3(10.7, 0, -7.4))
+	_add_landmark("Seattle Aquarium", "A waterfront aquarium on Pier 59, represented here by its glassy marine-blue facade.", Vector3(-5.4, 0, 3.8))
+	_add_landmark("Seattle Great Wheel", "A glowing waterfront wheel overlooking Elliott Bay and the distant sea.", Vector3(3.4, 0, 8.7))
 
 
 func _build_pike_place(origin: Vector3) -> void:
@@ -181,7 +207,11 @@ func _build_space_needle(origin: Vector3) -> void:
 
 
 func _build_seattle_waterfront() -> void:
-	Art.add_box(self, "ElliottBay", Vector3(0, -0.05, 14.6), Vector3(48, 0.18, 6.4), Color("#3e7f94"), false)
+	var water := WaterScript.new()
+	water.name = "ElliottBay"
+	water.position = Vector3(0, -0.05, 14.6)
+	water.setup(Vector2(48, 6.4), Color("#326d86"), Color("#84c8d4"))
+	add_child(water)
 	Art.add_static_box(self, "WaterfrontRail", Vector3(0, 0.45, 11.6), Vector3(48, 0.9, 0.28), Color("#61727b"), false)
 	Art.add_box(self, "WaterfrontWalk", Vector3(0, 0.01, 9.8), Vector3(48, 0.05, 3.2), Color("#bfc1b6"), false)
 	var aquarium := Node3D.new()
@@ -234,9 +264,21 @@ func _build_friends() -> void:
 	refresh_friend_following()
 
 
+func _add_landmark(title: String, description: String, location: Vector3) -> void:
+	var landmark := LandmarkScript.new()
+	landmark.setup(title, description)
+	landmark.position = location
+	landmark.info_requested.connect(_on_landmark_info)
+	add_child(landmark)
+
+
 func _on_ticket_requested(destination: String) -> void:
 	travel_requested.emit(destination)
 
 
 func _on_friend_conversation(friend_id: String, display_name: String) -> void:
 	friend_conversation_requested.emit(friend_id, display_name)
+
+
+func _on_landmark_info(title: String, description: String) -> void:
+	landmark_info_requested.emit(title, description)

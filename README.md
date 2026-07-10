@@ -9,8 +9,9 @@ The current checkpoint is a playable procedural prototype. It includes:
 - Shanghai greybox landmarks: Wukang Mansion, Xuhui Riverside, and Oriental Pearl Tower.
 - Seattle greybox landmarks: Pike Place Market, Seattle Aquarium, Great Wheel, Space Needle, and Elliott Bay.
 - Ticket offices, two-way shuttle cutscene, and persistent city state.
-- Kent and Joey, group invitation, companion following, hello dialogue, and placeholder card trading.
-- Local JSON save data with `F8` available as a development reset.
+- Kent and Joey, group invitation, companion following, wave reactions, and selectable card trading.
+- Interactive landmark plaques and animated pixel-water surfaces.
+- Local JSON save data, including per-world position, with `F8` available as a development reset.
 
 ## Run
 
@@ -34,6 +35,8 @@ Controls:
 HOME=/private/tmp/wof-godot-home godot --headless --path . --scene res://tests/smoke_test.tscn
 ```
 
-Godot stores the personal game save in `user://world_of_friends_save.json`. Personal card images should be placed under ignored `private_assets/cards/` when that loader is added.
+Godot stores the personal game save in `user://world_of_friends_save.json`.
+
+Optional personal card images can be placed under ignored `private_assets/cards/` using the card ID as the filename—for example `spark_mouse.png`. PNG, JPEG, and WebP are supported. The same files can alternatively live under the Godot user-data `cards/` directory.
 
 See [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for the approved baseline and [docs/PROGRESS.md](docs/PROGRESS.md) for saved implementation checkpoints.

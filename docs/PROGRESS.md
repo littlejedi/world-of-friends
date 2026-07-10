@@ -20,8 +20,20 @@
 - Automated smoke test covering both worlds, companions, trade, and return travel.
 - Native M5 visual QA at 640×360; boundary, lighting, composition, and UI issues corrected.
 
+## Checkpoint 2 — Richer exploration and personal collections
+
+- Interactive plaques and information panels for all requested landmarks.
+- Animated pixel-water shaders for the Huangpu River and Elliott Bay.
+- Selectable player/friend card exchange instead of automatic first-card trading.
+- Optional private card art from ignored project assets or the Godot user-data directory.
+- Per-world player-position persistence with periodic and on-travel saves.
+- Kent and Joey wave reactions when greeted.
+- Unified high-contrast modal, button, and card-picker styling.
+- Expanded automated coverage for disk persistence, landmarks, selected trades, water, and reactions.
+- Native M5 visual QA for the trade panel and Seattle waterfront shader.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.
-- Add a real card-selection grid and optional private image loader.
-- Improve companion navigation around buildings and add wave/idle animations.
+- Improve companion navigation around buildings and add varied idle animation.
+- Add an in-game collection viewer and pause/settings menu.

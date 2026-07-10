@@ -13,6 +13,7 @@ var follow_target: Node3D
 var follow_offset: Vector3 = Vector3.ZERO
 var visual: Node3D
 var walk_time: float = 0.0
+var wave_tween: Tween
 
 
 func setup(
@@ -92,3 +93,17 @@ func get_interaction_prompt() -> String:
 
 func interact(_player: Node3D) -> void:
 	conversation_requested.emit(friend_id, display_name)
+
+
+func wave() -> void:
+	var arm := visual.get_node_or_null("ArmR") as Node3D
+	if arm == null:
+		return
+	if wave_tween != null and wave_tween.is_valid():
+		wave_tween.kill()
+	arm.rotation_degrees = Vector3.ZERO
+	wave_tween = create_tween()
+	wave_tween.tween_property(arm, "rotation_degrees", Vector3(0, 0, -105), 0.18).set_trans(Tween.TRANS_BACK)
+	wave_tween.tween_property(arm, "rotation_degrees", Vector3(0, 0, -70), 0.13)
+	wave_tween.tween_property(arm, "rotation_degrees", Vector3(0, 0, -105), 0.13)
+	wave_tween.tween_property(arm, "rotation_degrees", Vector3.ZERO, 0.22)

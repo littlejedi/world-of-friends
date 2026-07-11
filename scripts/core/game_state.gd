@@ -1,6 +1,7 @@
 extends Node
 
 const SAVE_PATH := "user://world_of_friends_save.json"
+const CardArt = preload("res://scripts/art/card_art_factory.gd")
 const LANDMARK_GUIDE := {
 	"shanghai": [
 		{"id": "wukang_mansion", "title": "Wukang Mansion", "hint": "Follow the tree-lined western street."},
@@ -232,8 +233,9 @@ func get_card_texture(card_id: String) -> Texture2D:
 				var texture := _make_card_thumbnail(image)
 				card_texture_cache[card_id] = texture
 				return texture
-	card_texture_cache[card_id] = null
-	return null
+	var fallback := CardArt.create(card_id)
+	card_texture_cache[card_id] = fallback
+	return fallback
 
 
 func _make_card_thumbnail(source: Image) -> Texture2D:

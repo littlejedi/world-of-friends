@@ -38,6 +38,12 @@ func _run() -> void:
 	check(main.current_world != null, "Main world is created")
 	check(GameState.get_landmark_entries("shanghai").size() == 3 and GameState.get_landmark_entries("seattle").size() == 4, "City guide metadata covers both worlds")
 	check(not bool(GameState.claim_city_guide_reward("shanghai").ok), "An incomplete city guide cannot claim its souvenir")
+	var generated_card := GameState.get_card_texture("spark_mouse")
+	var generated_card_image := generated_card.get_image()
+	check(generated_card_image.get_width() == 32 and generated_card_image.get_height() == 40, "Built-in cards receive generated pixel artwork")
+	check(GameState.get_card_texture("spark_mouse") == generated_card, "Generated card artwork is cached")
+	var souvenir_card_image := GameState.get_card_texture("shanghai_skyline").get_image()
+	check(souvenir_card_image.get_pixel(3, 3) != generated_card_image.get_pixel(3, 3), "Souvenir cards receive distinct city artwork")
 	check(main.gameplay_audio != null, "Gameplay sound system is created")
 	var footstep_profiles_complete: bool = main.gameplay_audio.footstep_streams.size() == 4
 	for surface in ["road", "ground", "promenade", "pier"]:

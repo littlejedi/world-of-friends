@@ -15,6 +15,7 @@ The current checkpoint is a playable procedural prototype. It includes:
 - Original city ambience, surface-aware alternating footsteps, interaction chimes, and shuttle audio synthesized at runtime, with a persistent sound preference.
 - Persistent city guides with landmark hints and separate Shanghai/Seattle discovery progress.
 - One-time Shanghai and Seattle souvenir cards awarded for completing each city guide.
+- Original generated pixel artwork for every built-in creature and souvenir card, with private images still supported as overrides.
 - Procedurally modeled landmark silhouettes, including Wukang's flatiron corner and the Space Needle's splayed legs.
 - Local JSON save data, including per-world position, with `F8` available as a development reset.
 
@@ -45,7 +46,7 @@ HOME=/private/tmp/wof-godot-home godot --headless --path . --scene res://tests/s
 
 Godot stores the personal game save in `user://world_of_friends_save.json`.
 
-Optional personal card images can be placed under ignored `private_assets/cards/` using the card ID as the filename—for example `spark_mouse.png`. PNG, JPEG, and WebP are supported. The same files can alternatively live under the Godot user-data `cards/` directory.
+Optional personal card images can be placed under ignored `private_assets/cards/` using the card ID as the filename—for example `spark_mouse.png`. PNG, JPEG, and WebP are supported. The same files can alternatively live under the Godot user-data `cards/` directory. Personal images replace the generated original fallback artwork.
 
 See [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for the approved baseline and [docs/PROGRESS.md](docs/PROGRESS.md) for saved implementation checkpoints.
 

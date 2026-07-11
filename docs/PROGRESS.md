@@ -134,6 +134,18 @@
 - Browser WebGL build loaded and accepted movement input with no console warnings or errors.
 - Universal macOS 0.11.0 build exported and launched successfully on Apple Silicon.
 
+## Checkpoint 12 — Original pixel-card artwork
+
+- Deterministic 32×40 pixel-art generator added for data-driven card thumbnails.
+- Individual creature silhouettes and colorways for all seven built-in trade cards.
+- Shanghai Skyline and Seattle Sound souvenirs receive distinct city-scene artwork.
+- Generated thumbnails appear automatically in collection tiles and trade pickers.
+- Optional private PNG, JPEG, or WebP images continue to override generated art.
+- Generated textures are cached for reuse during the session.
+- Automated coverage expanded to 74 checks for dimensions, caching, and distinct souvenir artwork.
+- Web package exported successfully; interactive localhost artwork QA was deferred because the current sandbox quota blocked its test port.
+- Universal macOS 0.12.0 build exported and launched successfully on Apple Silicon.
+
 ## Next checkpoint
 
 - Replace procedural landmark models with authored Blender assets after the visual style kit is approved.

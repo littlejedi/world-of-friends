@@ -146,6 +146,14 @@
 - Web package exported successfully; interactive localhost artwork QA was deferred because the current sandbox quota blocked its test port.
 - Universal macOS 0.12.0 build exported and launched successfully on Apple Silicon.
 
+## Checkpoint 13 — Mutual greeting animations
+
+- Saying hello now makes the player visibly wave alongside Kent or Joey.
+- Group greetings synchronize the player's wave with both friends.
+- Repeated greetings safely restart each character's arm animation.
+- Automated coverage expanded to 76 checks for player and group greeting reactions.
+- Universal macOS and browser release packages updated to version 0.13.0.
+
 ## Next checkpoint
 
 - Replace procedural landmark models with authored Blender assets after the visual style kit is approved.

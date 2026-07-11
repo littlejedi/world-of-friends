@@ -142,8 +142,11 @@ func _run() -> void:
 		main.hud.close_modal()
 	check(GameState.has_claimed_city_reward("seattle") and str(GameState.player_cards.back().id) == "seattle_sound", "Completing Seattle awards its souvenir card")
 	check(GameState.player_cards.size() == 5, "Both city souvenirs join the card collection")
-	main.current_world.wave_friend("kent")
+	main._on_friend_hello("kent")
+	check(main.player.wave_tween != null, "Saying hello makes the player wave")
 	check(main.current_world.friends[0].wave_tween != null, "Saying hello triggers a friend reaction")
+	main._on_all_friends_hello()
+	check(main.current_world.friends[1].wave_tween != null, "A group hello makes every friend wave")
 
 	GameState.invite_friends()
 	main.current_world.refresh_friend_following()

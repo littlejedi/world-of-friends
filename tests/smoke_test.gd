@@ -102,6 +102,7 @@ func _run() -> void:
 
 	main._begin_travel("seattle")
 	check(main.gameplay_audio.travel_active and main.gameplay_audio.travel_player.stream == main.gameplay_audio.travel_stream, "Shuttle travel starts its engine loop")
+	check(not main.travel_cutscene.party_traveling and main.travel_cutscene.passenger_label.text.contains("YOU"), "First shuttle trip shows the player traveling alone")
 	main.travel_cutscene.visible = false
 	main._on_travel_finished("seattle")
 	await get_tree().process_frame
@@ -141,6 +142,14 @@ func _run() -> void:
 	GameState.invite_friends()
 	main.current_world.refresh_friend_following()
 	check(main.current_world.friends[0].follow_target == main.player, "Invited friends follow the player")
+	main.hud.show_ticket("shanghai")
+	await get_tree().process_frame
+	var ticket_mentions_friends := false
+	for ticket_label in main.hud.modal_content.find_children("*", "Label", true, false):
+		if str(ticket_label.text).contains("Kent and Joey"):
+			ticket_mentions_friends = true
+	check(ticket_mentions_friends, "Party ticket confirms Kent and Joey will board")
+	main.hud.close_modal()
 	for step in range(18):
 		main.current_world.update_companion_trail(Vector3(float(step) * 0.42, 0.08, 3.0))
 	check(main.current_world.companion_trail.size() > 10, "Companion breadcrumb trail records the player's route")
@@ -166,10 +175,14 @@ func _run() -> void:
 	check(main.hud.modal_content.find_children("*", "Button", true, false).size() == 6, "Pause menu exposes resume, collection, guide, audio, save, and quit actions")
 	main.hud.close_modal()
 
+	main._begin_travel("shanghai")
+	check(main.travel_cutscene.party_traveling and main.travel_cutscene.passenger_label.text.contains("KENT & JOEY"), "Return shuttle visibly includes Kent and Joey")
+	main.travel_cutscene.visible = false
 	main._on_travel_finished("shanghai")
 	await get_tree().process_frame
 	check(main.current_world.world_id == "shanghai", "Return travel loads Shanghai")
 	check(main.current_world.friends.size() == 2, "Kent and Joey travel back to Shanghai")
+	check(main.hud.toast_label.text.contains("with Kent and Joey"), "Party arrival confirms the friends reached Shanghai")
 	GameState.claimed_city_rewards.erase("shanghai")
 	for card_index in range(GameState.player_cards.size() - 1, -1, -1):
 		if str(GameState.player_cards[card_index].id) == "shanghai_skyline":

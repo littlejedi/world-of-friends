@@ -123,6 +123,17 @@
 - Browser visual QA confirmed the flatiron silhouette reads cleanly from the gameplay camera with no console warnings or errors.
 - Universal macOS 0.10.0 build exported and launched successfully on Apple Silicon.
 
+## Checkpoint 11 — Traveling together
+
+- Shuttle cutscene now receives and renders the current travel-party state.
+- Solo trips show the player alone; invited-party trips show player, Kent, and Joey windows in their character colors.
+- Travel-party label and cutscene subtitle explicitly confirm who is aboard.
+- Ticket-office confirmation notes when Kent and Joey will board with the player.
+- Arrival message confirms that the friends reached Shanghai together.
+- Automated coverage expanded to 71 checks for solo travel, party tickets, companion cutscenes, and party arrival.
+- Browser WebGL build loaded and accepted movement input with no console warnings or errors.
+- Universal macOS 0.11.0 build exported and launched successfully on Apple Silicon.
+
 ## Next checkpoint
 
 - Replace procedural landmark models with authored Blender assets after the visual style kit is approved.

@@ -96,7 +96,10 @@ func _load_world(world_id: String, arriving: bool, restore_saved_position: bool 
 	if world_id == "seattle" and GameState.mark_seattle_arrival():
 		hud.show_seattle_introduction.call_deferred()
 	else:
-		hud.show_toast("Arrived in %s." % world_id.capitalize(), 2.0)
+		var arrival_message := "Arrived in %s." % world_id.capitalize()
+		if arriving and GameState.friends_in_party:
+			arrival_message = "Arrived in %s with Kent and Joey." % world_id.capitalize()
+		hud.show_toast(arrival_message, 2.0)
 
 
 func _on_interact_requested() -> void:
@@ -125,7 +128,7 @@ func _begin_travel(destination: String) -> void:
 	_save_current_position()
 	GameState.save_game()
 	gameplay_audio.start_travel()
-	travel_cutscene.start_trip(GameState.current_world, destination)
+	travel_cutscene.start_trip(GameState.current_world, destination, GameState.friends_in_party)
 
 
 func _on_travel_finished(destination: String) -> void:

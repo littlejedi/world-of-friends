@@ -8,7 +8,7 @@ The current checkpoint is a playable procedural prototype. It includes:
 - Keyboard-relative movement, interaction prompts, and zoom.
 - Shanghai low-poly landmarks: Wukang Mansion, Xuhui Riverside, and Oriental Pearl Tower.
 - Seattle low-poly landmarks: Pike Place Market, Seattle Aquarium, Great Wheel, Space Needle, and Elliott Bay.
-- Ticket offices, two-way shuttle cutscene, and persistent city state.
+- Ticket offices, party-aware two-way shuttle cutscene, and persistent city state.
 - Kent and Joey, group invitation, companion following, wave reactions, and selectable card trading.
 - Interactive landmark plaques and animated pixel-water surfaces.
 - Moving river boats, Seattle ferry traffic, bird flocks, pedestrians, and a rotating Great Wheel.

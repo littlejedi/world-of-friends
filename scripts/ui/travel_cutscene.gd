@@ -10,7 +10,9 @@ var origin: String = "shanghai"
 var elapsed: float = 0.0
 var stars: Array[Vector2] = []
 var title_label: Label
+var passenger_label: Label
 var subtitle_label: Label
+var party_traveling: bool = false
 
 
 func _ready() -> void:
@@ -33,6 +35,17 @@ func _ready() -> void:
 	title_label.add_theme_font_size_override("font_size", 25)
 	title_label.add_theme_color_override("font_color", Color("#fff0b5"))
 	add_child(title_label)
+	passenger_label = Label.new()
+	passenger_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	passenger_label.anchor_left = 0.5
+	passenger_label.anchor_right = 0.5
+	passenger_label.offset_left = -260
+	passenger_label.offset_right = 260
+	passenger_label.offset_top = 60
+	passenger_label.offset_bottom = 84
+	passenger_label.add_theme_font_size_override("font_size", 12)
+	passenger_label.add_theme_color_override("font_color", Color("#9ed8e3"))
+	add_child(passenger_label)
 	subtitle_label = Label.new()
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.anchor_left = 0.5
@@ -49,11 +62,14 @@ func _ready() -> void:
 	add_child(subtitle_label)
 
 
-func start_trip(origin_id: String, destination_id: String) -> void:
+func start_trip(origin_id: String, destination_id: String, with_friends: bool = false) -> void:
 	origin = origin_id
 	destination = destination_id
+	party_traveling = with_friends
 	elapsed = 0.0
 	title_label.text = "%s  →  %s" % [origin.capitalize(), destination.capitalize()]
+	passenger_label.text = "TRAVEL PARTY  •  YOU, KENT & JOEY" if party_traveling else "TRAVEL PARTY  •  YOU"
+	subtitle_label.text = ("Kent and Joey are aboard" if party_traveling else "Traveling through space") + "  •  press Space to skip"
 	visible = true
 	queue_redraw()
 
@@ -97,8 +113,15 @@ func _draw() -> void:
 		Vector2(shuttle_x - 42, shuttle_y - 13)
 	])
 	draw_colored_polygon(shuttle_points, Color("#e8edf0"))
-	draw_rect(Rect2(Vector2(shuttle_x - 18, shuttle_y - 9), Vector2(15, 8)), Color("#68c7e1"))
-	draw_rect(Rect2(Vector2(shuttle_x + 2, shuttle_y - 9), Vector2(15, 8)), Color("#68c7e1"))
+	var passenger_colors := [Color("#f3b34c")]
+	if party_traveling:
+		passenger_colors.append(Color("#4678b7"))
+		passenger_colors.append(Color("#c66655"))
+	var first_window_x := shuttle_x - 8.0 - float(passenger_colors.size() - 1) * 10.0
+	for passenger_index in range(passenger_colors.size()):
+		var window_x := first_window_x + float(passenger_index) * 20.0
+		draw_rect(Rect2(Vector2(window_x - 7, shuttle_y - 9), Vector2(14, 8)), Color("#68c7e1"))
+		draw_rect(Rect2(Vector2(window_x - 5, shuttle_y - 5), Vector2(10, 3)), passenger_colors[passenger_index])
 	var flame_length := 15.0 + sin(elapsed * 15.0) * 5.0
 	draw_colored_polygon(PackedVector2Array([
 		Vector2(shuttle_x - 42, shuttle_y - 7),

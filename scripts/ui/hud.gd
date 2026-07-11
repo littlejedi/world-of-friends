@@ -206,7 +206,10 @@ func close_modal() -> void:
 func show_ticket(destination: String) -> void:
 	_clear_modal()
 	_add_heading("INTERWORLD TICKET OFFICE")
-	_add_body("Board the next shuttle to %s? Progress is saved before departure." % destination.capitalize())
+	var party_note := ""
+	if GameState.friends_in_party:
+		party_note = "\n\nKent and Joey will board the shuttle with you."
+	_add_body("Board the next shuttle to %s? Progress is saved before departure.%s" % [destination.capitalize(), party_note])
 	_add_button("Board shuttle", func() -> void:
 		close_modal()
 		travel_confirmed.emit(destination)

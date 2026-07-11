@@ -154,6 +154,17 @@
 - Automated coverage expanded to 76 checks for player and group greeting reactions.
 - Universal macOS and browser release packages updated to version 0.13.0.
 
+## Checkpoint 14 — In-world greetings
+
+- One-on-one greetings now close the conversation panel before the animation begins.
+- Player and friend turn to face one another while waving.
+- Pixel-style `HELLO!` and `HI!` speech appears above the characters, then fades away.
+- Seattle's group greeting applies the same coordinated presentation to Kent and Joey.
+- The visual-preview harness can reproduce Seattle greetings for future browser checks.
+- Automated coverage expanded to 80 checks for visible panels, speech, and facing direction.
+- Browser visual QA confirmed readable, separated greeting text at the target presentation scale.
+- Universal macOS and browser release packages updated to version 0.14.0.
+
 ## Next checkpoint
 
 - Replace procedural landmark models with authored Blender assets after the visual style kit is approved.

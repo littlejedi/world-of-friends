@@ -24,6 +24,10 @@ func _ready() -> void:
 		main.hud.toast_label.visible = false
 	if focus == "waterfront":
 		main.player.global_position = Vector3(0, 0.08, 8.2)
+	elif focus == "greeting":
+		main.player.global_position = Vector3(3.4, 0.08, 3.3)
+		await get_tree().create_timer(0.8).timeout
+		main._on_friend_hello("kent")
 	if modal_preview == "trade":
 		main.hud.show_friend_menu("kent", "Kent")
 		main.hud._trade_card()

@@ -248,11 +248,11 @@ func show_seattle_introduction() -> void:
 
 
 func _show_hello() -> void:
-	friend_hello_requested.emit(current_friend_id)
-	_clear_modal()
-	_add_heading(current_friend_name.to_upper())
-	_add_body("You say hello. %s waves back enthusiastically." % current_friend_name)
-	_add_button("Continue", func() -> void: show_friend_menu(current_friend_id, current_friend_name))
+	var friend_id := current_friend_id
+	var friend_name := current_friend_name
+	close_modal()
+	friend_hello_requested.emit(friend_id)
+	show_toast("You and %s wave hello." % friend_name)
 
 
 func _invite_friends() -> void:

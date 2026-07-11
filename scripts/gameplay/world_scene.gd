@@ -91,16 +91,22 @@ func update_companion_trail(player_position: Vector3) -> void:
 		friends[index].set_follow_point(point + side * side_amount)
 
 
-func wave_friend(friend_id: String) -> void:
+func greet_friend(friend_id: String) -> void:
 	for friend in friends:
 		if friend.friend_id == friend_id:
-			friend.wave()
+			player.greet(friend.global_position, "HELLO!")
+			friend.greet(player.global_position, "HI!")
 			return
 
 
-func wave_all_friends() -> void:
+func greet_all_friends() -> void:
+	if friends.is_empty():
+		return
+	var group_center := Vector3.ZERO
 	for friend in friends:
-		friend.wave()
+		group_center += friend.global_position
+		friend.greet(player.global_position, "HI!")
+	player.greet(group_center / float(friends.size()), "HELLO!")
 
 
 func set_ambient_audio_enabled(enabled: bool) -> void:

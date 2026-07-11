@@ -148,15 +148,13 @@ func _on_party_invited() -> void:
 
 
 func _on_friend_hello(friend_id: String) -> void:
-	player.wave()
 	if current_world != null:
-		current_world.wave_friend(friend_id)
+		current_world.greet_friend(friend_id)
 
 
 func _on_all_friends_hello() -> void:
-	player.wave()
 	if current_world != null:
-		current_world.wave_all_friends()
+		current_world.greet_all_friends()
 
 
 func _on_player_step() -> void:

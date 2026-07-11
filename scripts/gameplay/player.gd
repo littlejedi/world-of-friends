@@ -14,6 +14,8 @@ var visual: Node3D
 var walk_time: float = 0.0
 var footstep_cooldown: float = 0.0
 var wave_tween: Tween
+var speech_bubble: Label3D
+var speech_tween: Tween
 
 
 func _ready() -> void:
@@ -29,6 +31,11 @@ func _ready() -> void:
 		Color("#2c2430"),
 		false
 	)
+	speech_bubble = Art.add_label(self, "", Vector3(0, 2.55, 0), 36, Color("#fff4d6"))
+	speech_bubble.name = "SpeechBubble"
+	speech_bubble.pixel_size = 0.009
+	speech_bubble.outline_size = 10
+	speech_bubble.visible = false
 
 
 func _physics_process(delta: float) -> void:
@@ -95,3 +102,30 @@ func wave() -> void:
 	wave_tween.tween_property(arm, "rotation_degrees", Vector3(0, 0, -70), 0.13)
 	wave_tween.tween_property(arm, "rotation_degrees", Vector3(0, 0, -105), 0.13)
 	wave_tween.tween_property(arm, "rotation_degrees", Vector3.ZERO, 0.22)
+
+
+func greet(target_position: Vector3, words: String = "HELLO!") -> void:
+	face_toward(target_position)
+	wave()
+	say(words)
+
+
+func face_toward(target_position: Vector3) -> void:
+	var direction := target_position - global_position
+	direction.y = 0.0
+	if direction.length_squared() > 0.001:
+		look_at(global_position + direction, Vector3.UP)
+
+
+func say(words: String) -> void:
+	if speech_bubble == null:
+		return
+	if speech_tween != null and speech_tween.is_valid():
+		speech_tween.kill()
+	speech_bubble.text = words
+	speech_bubble.modulate = Color("#fff4d6")
+	speech_bubble.visible = true
+	speech_tween = create_tween()
+	speech_tween.tween_interval(1.35)
+	speech_tween.tween_property(speech_bubble, "modulate:a", 0.0, 0.35)
+	speech_tween.tween_callback(func() -> void: speech_bubble.visible = false)

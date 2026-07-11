@@ -142,9 +142,16 @@ func _run() -> void:
 		main.hud.close_modal()
 	check(GameState.has_claimed_city_reward("seattle") and str(GameState.player_cards.back().id) == "seattle_sound", "Completing Seattle awards its souvenir card")
 	check(GameState.player_cards.size() == 5, "Both city souvenirs join the card collection")
-	main._on_friend_hello("kent")
+	main.hud.show_friend_menu("kent", "Kent")
+	main.hud._show_hello()
+	check(not main.hud.is_modal_open(), "Greeting closes the conversation panel so the animation stays visible")
 	check(main.player.wave_tween != null, "Saying hello makes the player wave")
 	check(main.current_world.friends[0].wave_tween != null, "Saying hello triggers a friend reaction")
+	check(main.player.speech_bubble.visible and main.player.speech_bubble.text == "HELLO!", "The player greeting appears in the world")
+	check(main.current_world.friends[0].speech_bubble.visible and main.current_world.friends[0].speech_bubble.text == "HI!", "The friend answers with an in-world greeting")
+	var player_to_kent: Vector3 = main.current_world.friends[0].global_position - main.player.global_position
+	player_to_kent.y = 0.0
+	check((-main.player.global_basis.z).dot(player_to_kent.normalized()) > 0.98, "The player turns toward the greeted friend")
 	main._on_all_friends_hello()
 	check(main.current_world.friends[1].wave_tween != null, "A group hello makes every friend wave")
 

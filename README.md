@@ -2,7 +2,7 @@
 
 A private 2.5D pixel-style exploration game connecting handcrafted versions of Shanghai and Seattle.
 
-An isometric art-direction overhaul is now being developed alongside the stable 3D game. The first Shanghai visual slice uses a 64×32 grid, painted architectural surfaces, baked-looking shadows, detailed props, Y-sorted characters, and the existing keyboard controls.
+An isometric art-direction overhaul is now being developed alongside the stable 3D game. The Shanghai visual lab uses painted architectural surfaces, baked-looking shadows, detailed props, Y-sorted characters, and the existing keyboard controls. Press `1`, `2`, or `3` in the lab to inspect the Wukang Mansion, Xuhui Riverside, and Oriental Pearl studies.
 
 The current checkpoint is a playable procedural prototype. It includes:
 
@@ -58,6 +58,7 @@ Optional personal card images can be placed under ignored `private_assets/cards/
 
 See [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for the approved baseline and [docs/PROGRESS.md](docs/PROGRESS.md) for saved implementation checkpoints.
 The art-reboot workflow and asset rules are documented in [docs/ISOMETRIC_ART_PIPELINE.md](docs/ISOMETRIC_ART_PIPELINE.md).
+The real-world photographic research and the visual features derived from it are listed in [docs/SHANGHAI_VISUAL_REFERENCES.md](docs/SHANGHAI_VISUAL_REFERENCES.md).
 
 ## Build the Mac application
 

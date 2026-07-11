@@ -178,9 +178,23 @@
 - Native M5 capture at 640×360 corrected hero-building crop, character scale, and roof texture density.
 - Mac and browser package versions advanced to 0.15.0 while the existing main game remains the default entry point.
 
+## Checkpoint 16 — Photo-informed Shanghai landmark studies
+
+- Real-world image research completed for Wukang Mansion, Xuhui Riverside, and the Oriental Pearl Tower.
+- Visual-reference document records sources and the architectural traits used for original game art.
+- Isometric lab now switches among all three studies with the `1`, `2`, and `3` keys.
+- Wukang Mansion study upgraded with a ship-like wedge, stone arcade treatment, balconies, façade bands, brick courses, and plane-tree streets.
+- Xuhui Riverside study adds the Huangpu River, water traffic, broad promenade, red running track, railings, skyline, greenery, and preserved orange industrial cranes.
+- Oriental Pearl study adds tripod supports, stacked pixel spheres, observation decks, antenna, river edge, plaza, and surrounding Pudong skyline.
+- Per-study composition scales keep the landmark silhouettes readable at 640×360.
+- Automated coverage expanded to 87 checks, including feature signatures for all three landmark studies.
+- Native M5 captures at 640×360 corrected the Wukang arcade, Xuhui skyline height, and Oriental Pearl spire framing.
+- Mac and browser package versions advanced to 0.16.0 while the existing 3D game remains the default entry point.
+
 ## Next checkpoint
 
 - Review the Shanghai isometric slice and lock its palette, texture density, and character scale.
 - Convert one complete Shanghai gameplay block to the new renderer after visual approval.
+- Replace deterministic study surfaces with approved painterly raster assets as they become available.
 - Install Blender only if the pre-rendered hero-asset workflow is approved.
 - Decide whether to publish the private browser build to an access-controlled host.

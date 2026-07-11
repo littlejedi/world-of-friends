@@ -25,6 +25,15 @@ func _run() -> void:
 	check(int(style_metrics.prop_count) == 7, "Isometric visual slice includes a reusable street-prop set")
 	check(bool(style_metrics.player_present), "Isometric visual slice includes a controllable 2D player")
 	check(int(style_metrics.layers) == 3, "Isometric visual slice separates environment, depth-sorted actors, and HUD")
+	check(int(style_metrics.study_count) == 3 and "arcaded_base" in style_metrics.study_features, "Isometric visual lab includes a photo-informed Wukang Mansion study")
+	style_lab.set_study_for_test("xuhui")
+	await get_tree().process_frame
+	style_metrics = style_lab.get_visual_metrics()
+	check(style_metrics.current_study == "xuhui" and "industrial_cranes" in style_metrics.study_features, "Isometric visual lab includes a photo-informed Xuhui Riverside study")
+	style_lab.set_study_for_test("oriental_pearl")
+	await get_tree().process_frame
+	style_metrics = style_lab.get_visual_metrics()
+	check(style_metrics.current_study == "oriental_pearl" and "tripod_supports" in style_metrics.study_features, "Isometric visual lab includes a photo-informed Oriental Pearl study")
 	style_lab.queue_free()
 	await get_tree().process_frame
 

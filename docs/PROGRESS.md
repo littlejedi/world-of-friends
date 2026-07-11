@@ -102,8 +102,17 @@
 - Web package exported successfully; interactive localhost QA was deferred because the current sandbox could not open its test port.
 - Universal macOS 0.8.0 build exported and launched successfully on Apple Silicon.
 
+## Checkpoint 9 — Surface-aware footsteps
+
+- World-position classification for road, ground, Shanghai promenade, and Seattle pier surfaces.
+- Eight original footstep samples synthesized at runtime: two alternating variants per surface.
+- Softer ground steps, sharper road contact, bright promenade taps, and hollow Seattle pier knocks.
+- Surface routing integrated with the existing player walking cadence and unified sound preference.
+- Automated coverage expanded to 63 checks for generated profiles and surface selection in both cities.
+- Browser movement, guide rendering, and console behavior revalidated with the expanded audio bank.
+- Universal macOS 0.9.0 build exported and launched successfully on Apple Silicon.
+
 ## Next checkpoint
 
 - Replace key greybox landmarks with authored Blender models after the visual style kit is approved.
-- Add surface-specific footstep variations after the final terrain materials are chosen.
 - Decide whether to publish the private browser build to an access-controlled host.

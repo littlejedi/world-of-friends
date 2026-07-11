@@ -39,9 +39,20 @@ func _run() -> void:
 	check(GameState.get_landmark_entries("shanghai").size() == 3 and GameState.get_landmark_entries("seattle").size() == 4, "City guide metadata covers both worlds")
 	check(not bool(GameState.claim_city_guide_reward("shanghai").ok), "An incomplete city guide cannot claim its souvenir")
 	check(main.gameplay_audio != null, "Gameplay sound system is created")
-	check(main.gameplay_audio.footstep_streams.size() == 2, "Alternating footsteps are synthesized")
+	var footstep_profiles_complete: bool = main.gameplay_audio.footstep_streams.size() == 4
+	for surface in ["road", "ground", "promenade", "pier"]:
+		footstep_profiles_complete = footstep_profiles_complete and (main.gameplay_audio.footstep_streams.get(surface, []) as Array).size() == 2
+	check(footstep_profiles_complete, "Alternating footsteps are synthesized for every surface")
 	main._on_player_step()
 	check(main.gameplay_audio.footstep_player.stream is AudioStreamWAV, "Player steps trigger a generated sound")
+	for sample in [
+		{"position": Vector3(0, 0.08, -3.5), "surface": "road"},
+		{"position": Vector3(-18, 0.08, 4.5), "surface": "ground"},
+		{"position": Vector3(-8, 0.08, 9.6), "surface": "promenade"}
+	]:
+		main.player.global_position = sample.position
+		main._on_player_step()
+		check(main.gameplay_audio.last_footstep_surface == sample.surface, "Shanghai %s selects its own footstep profile" % sample.surface)
 	main.gameplay_audio.play_interaction()
 	check(main.gameplay_audio.effect_player.stream == main.gameplay_audio.interaction_stream, "Interactions trigger a generated chime")
 	check(main.current_world.world_id == "shanghai", "A new game starts in Shanghai")
@@ -107,6 +118,9 @@ func _run() -> void:
 	check(main.current_world.get_node_or_null("ElliottBayFerry") != null, "Seattle ferry traffic is active")
 	check(main.current_world.get_node_or_null("SeattleGulls") != null, "Seattle has ambient gull movement")
 	check(main.current_world.get_node_or_null("SeattleWalkerA") != null, "Seattle has ambient pedestrians")
+	main.player.global_position = Vector3(0, 0.08, 9.6)
+	main._on_player_step()
+	check(main.gameplay_audio.last_footstep_surface == "pier", "Seattle waterfront selects the pier footstep profile")
 	check(main.current_world.friends.size() == 2, "Kent and Joey appear in Seattle")
 	main.hud.close_modal()
 	main.current_world.get_node("SeattleAquariumPlaque").interact(main.player)

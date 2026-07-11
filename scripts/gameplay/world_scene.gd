@@ -51,6 +51,14 @@ func get_closest_interactable(from_position: Vector3, max_distance: float = 3.25
 	return closest
 
 
+func get_surface_type(at_position: Vector3) -> String:
+	if at_position.z >= 8.0:
+		return "promenade" if world_id == "shanghai" else "pier"
+	if absf(at_position.z + 3.5) <= 2.15 or absf(at_position.x - 2.5) <= 2.15:
+		return "road"
+	return "ground"
+
+
 func refresh_friend_following() -> void:
 	companion_trail.clear()
 	if GameState.friends_in_party and player != null:

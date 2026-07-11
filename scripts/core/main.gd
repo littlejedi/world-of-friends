@@ -155,7 +155,8 @@ func _on_all_friends_hello() -> void:
 
 
 func _on_player_step() -> void:
-	gameplay_audio.play_footstep()
+	var surface := current_world.get_surface_type(player.global_position) if current_world != null else "road"
+	gameplay_audio.play_footstep(surface)
 
 
 func _on_landmark_info(landmark_id: String, title: String, description: String) -> void:

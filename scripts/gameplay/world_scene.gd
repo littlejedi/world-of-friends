@@ -183,12 +183,16 @@ func _build_wukang_mansion(origin: Vector3) -> void:
 	building.position = origin
 	add_child(building)
 	Art.add_static_box(building, "MainWing", Vector3(0, 2.45, 0.8), Vector3(10.0, 4.9, 4.0), Color("#a95243"))
-	Art.add_static_box(building, "CornerWing", Vector3(4.6, 3.0, -0.3), Vector3(2.4, 6.0, 2.8), Color("#b65c49"))
+	Art.add_triangular_prism(building, "FlatironNose", Vector3(5.1, 3.0, 0.8), Vector3(4.2, 6.0, 4.0), Color("#b65c49"))
+	Art.add_collision_box(building, "NoseCollision", Vector3(4.6, 3.0, 0.8), Vector3(3.2, 6.0, 2.8))
 	Art.add_box(building, "Roof", Vector3(0.8, 5.05, 0.55), Vector3(11.2, 0.35, 4.4), Color("#3c4147"))
+	Art.add_triangular_prism(building, "NoseRoof", Vector3(5.1, 6.1, 0.8), Vector3(4.5, 0.28, 4.3), Color("#343b42"))
 	for floor_index in range(3):
 		for window_index in range(7):
 			Art.add_box(building, "Window", Vector3(-3.9 + window_index * 1.25, 1.25 + floor_index * 1.25, -1.22), Vector3(0.52, 0.7, 0.08), Color("#9ed1d0"), false)
 			Art.add_box(building, "WindowCameraSide", Vector3(-3.9 + window_index * 1.25, 1.25 + floor_index * 1.25, 2.82), Vector3(0.52, 0.7, 0.08), Color("#9ed1d0"), false)
+		Art.add_box(building, "NoseWindow", Vector3(7.23, 1.25 + floor_index * 1.25, 0.8), Vector3(0.08, 0.7, 0.52), Color("#b8ddda"), false)
+	Art.add_box(building, "CornerCanopy", Vector3(7.25, 0.72, 0.8), Vector3(0.55, 0.15, 1.4), Color("#374b45"), false)
 	Art.add_label(building, "WUKANG MANSION", Vector3(0, 6.2, 0), 34, Color("#ffe6b3"))
 
 
@@ -197,10 +201,19 @@ func _build_oriental_pearl(origin: Vector3) -> void:
 	tower.name = "OrientalPearlTower"
 	tower.position = origin
 	add_child(tower)
+	Art.add_cylinder(tower, "Podium", Vector3(0, 0.28, 0), 1.65, 0.55, Color("#d5d9d7"), 12)
+	for support_index in range(3):
+		var support_angle := TAU * float(support_index) / 3.0
+		var support_start := Vector3(cos(support_angle) * 1.45, 0.5, sin(support_angle) * 1.45)
+		var support_end := Vector3(cos(support_angle) * 0.45, 3.1, sin(support_angle) * 0.45)
+		Art.add_beam(tower, "Support%d" % support_index, support_start, support_end, 0.24, Color("#e4e6e3"))
 	Art.add_cylinder(tower, "Stem", Vector3(0, 5.0, 0), 0.28, 10.0, Color("#e6e9e9"), 10)
 	Art.add_sphere(tower, "LowerPearl", Vector3(0, 3.25, 0), 1.55, Color("#c94f72"), 14, 7)
+	Art.add_cylinder(tower, "LowerDeck", Vector3(0, 3.25, 0), 1.72, 0.18, Color("#f0d9df"), 16)
 	Art.add_sphere(tower, "UpperPearl", Vector3(0, 7.8, 0), 1.05, Color("#d85f80"), 14, 7)
+	Art.add_cylinder(tower, "UpperDeck", Vector3(0, 7.8, 0), 1.22, 0.16, Color("#f2dce3"), 16)
 	Art.add_cylinder(tower, "Spire", Vector3(0, 10.2, 0), 0.11, 4.1, Color("#f0ece7"), 8)
+	Art.add_sphere(tower, "Beacon", Vector3(0, 10.55, 0), 0.28, Color("#e76b8e"), 10, 5)
 	Art.add_static_box(tower, "BaseCollision", Vector3(0, 1.0, 0), Vector3(2.7, 2.0, 2.7), Color("#e1dfd4"), false)
 	Art.add_label(tower, "ORIENTAL PEARL", Vector3(0, 12.7, 0), 32, Color("#ffe0ec"))
 
@@ -250,8 +263,13 @@ func _build_pike_place(origin: Vector3) -> void:
 	Art.add_box(market, "SignPanelCameraSide", Vector3(0, 4.2, 2.85), Vector3(7.5, 1.0, 0.18), Color("#ad2f36"), false)
 	Art.add_label(market, "PIKE PLACE MARKET", Vector3(0, 4.25, -1.4), 34, Color("#fff2d0"))
 	Art.add_label(market, "PIKE PLACE MARKET", Vector3(0, 4.25, 3.0), 34, Color("#fff2d0"))
+	var market_clock := Art.add_cylinder(market, "MarketClock", Vector3(3.65, 4.2, -1.38), 0.46, 0.10, Color("#f2e8ce"), 16)
+	market_clock.rotation_degrees.x = 90
+	Art.add_box(market, "ClockHandHour", Vector3(3.65, 4.28, -1.45), Vector3(0.07, 0.30, 0.04), Color("#29313b"), false).rotation_degrees.z = 32
+	Art.add_box(market, "ClockHandMinute", Vector3(3.76, 4.15, -1.46), Vector3(0.07, 0.38, 0.04), Color("#29313b"), false).rotation_degrees.z = -58
 	for stall_x in [-3.1, -1.0, 1.1, 3.2]:
 		Art.add_box(market, "MarketStall", Vector3(stall_x, 0.65, -1.9), Vector3(1.5, 1.25, 0.8), Color("#d97854"))
+		Art.add_box(market, "FlowerCrate", Vector3(stall_x, 1.38, -2.0), Vector3(1.15, 0.22, 0.64), Color("#e6b85d"), false)
 
 
 func _build_space_needle(origin: Vector3) -> void:
@@ -259,9 +277,16 @@ func _build_space_needle(origin: Vector3) -> void:
 	needle.name = "SpaceNeedle"
 	needle.position = origin
 	add_child(needle)
+	for leg_index in range(3):
+		var leg_angle := TAU * float(leg_index) / 3.0
+		var leg_start := Vector3(cos(leg_angle) * 1.75, 0.25, sin(leg_angle) * 1.75)
+		var leg_end := Vector3(cos(leg_angle) * 0.34, 6.45, sin(leg_angle) * 0.34)
+		Art.add_beam(needle, "Leg%d" % leg_index, leg_start, leg_end, 0.28, Color("#d9dedb"))
 	Art.add_cylinder(needle, "Column", Vector3(0, 4.4, 0), 0.30, 8.8, Color("#d9dedb"), 10)
-	Art.add_cylinder(needle, "ObservationDeck", Vector3(0, 8.2, 0), 1.75, 0.65, Color("#d2d5c8"), 14)
+	Art.add_cylinder(needle, "ObservationDeck", Vector3(0, 8.2, 0), 1.92, 0.34, Color("#d2d5c8"), 16)
+	Art.add_cylinder(needle, "DeckGlass", Vector3(0, 8.46, 0), 1.55, 0.30, Color("#71a9ad"), 16)
 	Art.add_cylinder(needle, "Restaurant", Vector3(0, 8.65, 0), 1.25, 0.4, Color("#d47955"), 14)
+	Art.add_cylinder(needle, "SaucerRoof", Vector3(0, 8.9, 0), 1.72, 0.16, Color("#e4e5dd"), 16)
 	Art.add_cylinder(needle, "Spire", Vector3(0, 10.2, 0), 0.10, 3.1, Color("#eef1ec"), 8)
 	Art.add_static_box(needle, "BaseCollision", Vector3(0, 0.8, 0), Vector3(2.6, 1.6, 2.6), Color("#bbc4bd"), false)
 	Art.add_label(needle, "SPACE NEEDLE", Vector3(0, 12.1, 0), 32, Color("#effff7"))

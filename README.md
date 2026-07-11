@@ -6,8 +6,8 @@ The current checkpoint is a playable procedural prototype. It includes:
 
 - Fixed 45-degree orthographic camera rendered at 640×360.
 - Keyboard-relative movement, interaction prompts, and zoom.
-- Shanghai greybox landmarks: Wukang Mansion, Xuhui Riverside, and Oriental Pearl Tower.
-- Seattle greybox landmarks: Pike Place Market, Seattle Aquarium, Great Wheel, Space Needle, and Elliott Bay.
+- Shanghai low-poly landmarks: Wukang Mansion, Xuhui Riverside, and Oriental Pearl Tower.
+- Seattle low-poly landmarks: Pike Place Market, Seattle Aquarium, Great Wheel, Space Needle, and Elliott Bay.
 - Ticket offices, two-way shuttle cutscene, and persistent city state.
 - Kent and Joey, group invitation, companion following, wave reactions, and selectable card trading.
 - Interactive landmark plaques and animated pixel-water surfaces.
@@ -15,6 +15,7 @@ The current checkpoint is a playable procedural prototype. It includes:
 - Original city ambience, surface-aware alternating footsteps, interaction chimes, and shuttle audio synthesized at runtime, with a persistent sound preference.
 - Persistent city guides with landmark hints and separate Shanghai/Seattle discovery progress.
 - One-time Shanghai and Seattle souvenir cards awarded for completing each city guide.
+- Procedurally modeled landmark silhouettes, including Wukang's flatiron corner and the Space Needle's splayed legs.
 - Local JSON save data, including per-world position, with `F8` available as a development reset.
 
 ## Run

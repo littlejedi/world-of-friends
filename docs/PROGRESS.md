@@ -112,7 +112,18 @@
 - Browser movement, guide rendering, and console behavior revalidated with the expanded audio bank.
 - Universal macOS 0.9.0 build exported and launched successfully on Apple Silicon.
 
+## Checkpoint 10 — Landmark silhouette polish
+
+- Reusable triangular-prism and angled-beam helpers added to the procedural art kit.
+- Wukang Mansion upgraded with a wedge-shaped flatiron nose, point windows, canopy, and roof cap.
+- Oriental Pearl Tower upgraded with tripod supports, a podium, deck rings, and upper beacon.
+- Pike Place Market upgraded with its facade clock, hands, and flower-topped stalls.
+- Space Needle upgraded with three splayed legs and a layered observation saucer.
+- Automated coverage expanded to 67 checks for the new landmark-defining geometry.
+- Browser visual QA confirmed the flatiron silhouette reads cleanly from the gameplay camera with no console warnings or errors.
+- Universal macOS 0.10.0 build exported and launched successfully on Apple Silicon.
+
 ## Next checkpoint
 
-- Replace key greybox landmarks with authored Blender models after the visual style kit is approved.
+- Replace procedural landmark models with authored Blender assets after the visual style kit is approved.
 - Decide whether to publish the private browser build to an access-controlled host.

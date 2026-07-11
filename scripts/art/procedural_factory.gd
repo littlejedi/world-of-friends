@@ -120,6 +120,59 @@ static func add_sphere(
 	return instance
 
 
+static func add_triangular_prism(
+	parent: Node,
+	object_name: String,
+	position: Vector3,
+	size: Vector3,
+	color: Color
+) -> MeshInstance3D:
+	var half := size * 0.5
+	var vertices := [
+		Vector3(-half.x, -half.y, -half.z),
+		Vector3(-half.x, -half.y, half.z),
+		Vector3(half.x, -half.y, 0),
+		Vector3(-half.x, half.y, -half.z),
+		Vector3(-half.x, half.y, half.z),
+		Vector3(half.x, half.y, 0)
+	]
+	var indices := [
+		0, 2, 1,
+		3, 4, 5,
+		0, 1, 4, 0, 4, 3,
+		0, 3, 5, 0, 5, 2,
+		1, 2, 5, 1, 5, 4
+	]
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for index in indices:
+		surface.add_vertex(vertices[index])
+	surface.generate_normals()
+	var mesh := surface.commit()
+	mesh.surface_set_material(0, material(color))
+	var instance := MeshInstance3D.new()
+	instance.name = object_name
+	instance.mesh = mesh
+	instance.position = position
+	parent.add_child(instance)
+	return instance
+
+
+static func add_beam(
+	parent: Node,
+	object_name: String,
+	start: Vector3,
+	end: Vector3,
+	width: float,
+	color: Color
+) -> MeshInstance3D:
+	var midpoint := start.lerp(end, 0.5)
+	var beam := add_box(parent, object_name, midpoint, Vector3(width, width, start.distance_to(end)), color)
+	var target := (parent as Node3D).to_global(end) if parent is Node3D else end
+	beam.look_at(target, Vector3.UP)
+	return beam
+
+
 static func add_label(
 	parent: Node,
 	text: String,

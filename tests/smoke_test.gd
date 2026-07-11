@@ -16,6 +16,18 @@ func check(condition: bool, message: String) -> void:
 
 
 func _run() -> void:
+	var style_scene: PackedScene = load("res://scenes/isometric_style_lab.tscn")
+	var style_lab := style_scene.instantiate()
+	get_tree().root.add_child(style_lab)
+	await get_tree().process_frame
+	var style_metrics: Dictionary = style_lab.get_visual_metrics()
+	check(style_metrics.tile_size == Vector2(64, 32), "Isometric visual slice uses a consistent 2:1 tile grid")
+	check(int(style_metrics.prop_count) == 7, "Isometric visual slice includes a reusable street-prop set")
+	check(bool(style_metrics.player_present), "Isometric visual slice includes a controllable 2D player")
+	check(int(style_metrics.layers) == 3, "Isometric visual slice separates environment, depth-sorted actors, and HUD")
+	style_lab.queue_free()
+	await get_tree().process_frame
+
 	GameState.reset_progress()
 	var disk_position := Vector3(1.25, 0.08, -3.5)
 	GameState.set_player_position("shanghai", disk_position)

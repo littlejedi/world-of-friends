@@ -2,6 +2,8 @@
 
 A private 2.5D pixel-style exploration game connecting handcrafted versions of Shanghai and Seattle.
 
+An isometric art-direction overhaul is now being developed alongside the stable 3D game. The first Shanghai visual slice uses a 64×32 grid, painted architectural surfaces, baked-looking shadows, detailed props, Y-sorted characters, and the existing keyboard controls.
+
 The current checkpoint is a playable procedural prototype. It includes:
 
 - Fixed 45-degree orthographic camera rendered at 640×360.
@@ -46,9 +48,16 @@ HOME=/private/tmp/wof-godot-home godot --headless --path . --scene res://tests/s
 
 Godot stores the personal game save in `user://world_of_friends_save.json`.
 
+To preview the new isometric visual direction without replacing the playable game:
+
+```sh
+godot --path . --scene res://scenes/isometric_style_lab.tscn
+```
+
 Optional personal card images can be placed under ignored `private_assets/cards/` using the card ID as the filename—for example `spark_mouse.png`. PNG, JPEG, and WebP are supported. The same files can alternatively live under the Godot user-data `cards/` directory. Personal images replace the generated original fallback artwork.
 
 See [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for the approved baseline and [docs/PROGRESS.md](docs/PROGRESS.md) for saved implementation checkpoints.
+The art-reboot workflow and asset rules are documented in [docs/ISOMETRIC_ART_PIPELINE.md](docs/ISOMETRIC_ART_PIPELINE.md).
 
 ## Build the Mac application
 

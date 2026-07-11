@@ -165,7 +165,22 @@
 - Browser visual QA confirmed readable, separated greeting text at the target presentation scale.
 - Universal macOS and browser release packages updated to version 0.14.0.
 
+## Checkpoint 15 — Isometric art-direction foundation
+
+- Parallel 2D isometric Shanghai visual slice added without replacing the stable 3D game.
+- Locked 64×32 tile projection with deterministic cobblestone, sidewalk, and road variation.
+- Wukang-inspired hero building study with brick courses, window bays, architectural bands, doors, gabled roofs, tower cap, chimneys, and baked-looking shadows.
+- Reusable depth-sorted trees, lamps, crates, bench, and planter props.
+- Controllable pixel character using the production WASD input actions.
+- Separate environment, Y-sorted actor/prop, and HUD layers establish the migration architecture.
+- Automated coverage expanded to 84 checks for projection, props, player presence, and layer structure.
+- Reproducible art-production and migration workflow documented for the remaining city overhaul.
+- Native M5 capture at 640×360 corrected hero-building crop, character scale, and roof texture density.
+- Mac and browser package versions advanced to 0.15.0 while the existing main game remains the default entry point.
+
 ## Next checkpoint
 
-- Replace procedural landmark models with authored Blender assets after the visual style kit is approved.
+- Review the Shanghai isometric slice and lock its palette, texture density, and character scale.
+- Convert one complete Shanghai gameplay block to the new renderer after visual approval.
+- Install Blender only if the pre-rendered hero-asset workflow is approved.
 - Decide whether to publish the private browser build to an access-controlled host.

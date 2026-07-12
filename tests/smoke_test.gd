@@ -26,6 +26,7 @@ func _run() -> void:
 	check(bool(style_metrics.player_present), "Isometric visual slice includes a controllable 2D player")
 	check(int(style_metrics.layers) == 3, "Isometric visual slice separates environment, depth-sorted actors, and HUD")
 	check(int(style_metrics.study_count) == 3 and "arcaded_base" in style_metrics.study_features, "Isometric visual lab includes a photo-informed Wukang Mansion study")
+	check("rounded_bow" in style_metrics.study_features and "flat_roof" in style_metrics.study_features, "Wukang study uses its real rounded bow and flat roof silhouette")
 	style_lab.set_study_for_test("xuhui")
 	await get_tree().process_frame
 	style_metrics = style_lab.get_visual_metrics()

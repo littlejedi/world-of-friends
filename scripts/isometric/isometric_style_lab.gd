@@ -92,8 +92,8 @@ func _set_study(study_id: String) -> void:
 			_add_prop(PropScript.Kind.BENCH, Vector2(116, 138))
 			_add_prop(PropScript.Kind.PLANTER, Vector2(251, 126))
 		_:
-			world_root.position = Vector2(320, 172)
-			world_root.scale = Vector2.ONE * COMPOSITION_SCALE
+			world_root.position = Vector2(320, 190)
+			world_root.scale = Vector2.ONE * 0.72
 			player.position = Vector2(6, 114)
 			_add_prop(PropScript.Kind.TREE, Vector2(187, 58), Color("#e0e6d4"))
 			_add_prop(PropScript.Kind.TREE, Vector2(-213, 86), Color("#d7e2c9"))

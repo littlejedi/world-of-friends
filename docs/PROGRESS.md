@@ -191,6 +191,19 @@
 - Native M5 captures at 640×360 corrected the Wukang arcade, Xuhui skyline height, and Oriental Pearl spire framing.
 - Mac and browser package versions advanced to 0.16.0 while the existing 3D game remains the default entry point.
 
+## Checkpoint 17 — Wukang Mansion silhouette correction
+
+- Two user-supplied street photographs used to correct the Wukang study's overall massing and corner treatment.
+- Sharp triangular tower and steep gabled cap removed.
+- Five-segment rounded bow now joins the long residential body without a pointed tip.
+- Flat roof, heavy projecting cornice, and pale rounded rooftop pavilion match the real horizontal roofline.
+- Stone arcade wraps the curved base instead of ending at the straight façade.
+- Five upper window tiers, straight and curved balcony rails, and exterior utility boxes reinforce the real façade rhythm.
+- Wukang-specific composition scale keeps the taller building readable at 640×360.
+- Automated coverage expanded to 88 checks with a rounded-bow and flat-roof regression signature.
+- Native M5 capture verified the corrected silhouette at the target resolution.
+- Mac and browser package versions advanced to 0.17.0 while the stable 3D game remains the default entry point.
+
 ## Next checkpoint
 
 - Review the Shanghai isometric slice and lock its palette, texture density, and character scale.

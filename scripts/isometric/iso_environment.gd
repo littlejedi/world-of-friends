@@ -44,7 +44,7 @@ func get_study_features() -> PackedStringArray:
 		"oriental_pearl":
 			return PackedStringArray(["tripod_supports", "lower_sphere", "upper_sphere", "stacked_decks", "spire"])
 		_:
-			return PackedStringArray(["ship_wedge", "arcaded_base", "red_brick", "balconies", "plane_trees"])
+			return PackedStringArray(["rounded_bow", "flat_roof", "rooftop_pavilion", "arcaded_base", "red_brick", "balconies", "plane_trees"])
 
 
 func grid_to_screen(x: float, y: float, level: float = 0.0) -> Vector2:
@@ -132,15 +132,17 @@ func _draw_building_shadow() -> void:
 
 
 func _draw_wukang_study() -> void:
-	_draw_iso_box(4.0, 3.0, 9.0, 5.5, 5.2)
-	_draw_front_bands(4.0, 13.0, 8.5, 5.2)
-	_draw_arcaded_base(4.0, 10.8, 8.5)
-	_draw_front_windows(4.0, 13.0, 8.5, 5.2)
-	_draw_side_windows(13.0, 3.0, 8.5, 5.2)
-	_draw_front_door(8.5, 8.5)
-	_draw_gabled_roof(4.0, 3.0, 9.0, 5.5, 5.2, 1.65)
-	_draw_corner_tower()
-	_draw_roof_details()
+	var height := 7.0
+	var front_y := 7.8
+	_draw_iso_box(4.0, 3.0, 8.4, 4.8, height)
+	_draw_front_bands(4.0, 10.55, front_y, height)
+	_draw_arcaded_base(4.0, 10.55, front_y)
+	_draw_front_windows(4.0, 10.55, front_y, height)
+	_draw_side_windows(12.4, 3.0, 6.78, height)
+	_draw_front_door(7.15, front_y)
+	_draw_flat_roof(4.0, 3.0, 8.4, 4.8, height)
+	_draw_rounded_bow(height)
+	_draw_wukang_cornice(height)
 
 
 func _draw_arcaded_base(x: float, x_end: float, y: float) -> void:
@@ -207,7 +209,7 @@ func _draw_brickwork(x: float, y: float, width: float, depth: float, height: flo
 
 
 func _draw_front_bands(x: float, x_end: float, y: float, height: float) -> void:
-	for level in [0.3, 1.72, 3.15, height - 0.18]:
+	for level in [0.3, 1.48, 2.55, 3.6, 4.65, 5.7, height - 0.16]:
 		var left := grid_to_screen(x, y, level)
 		var right := grid_to_screen(x_end, y, level)
 		draw_line(left, right, Color("#c0a382"), 3.0)
@@ -215,20 +217,20 @@ func _draw_front_bands(x: float, x_end: float, y: float, height: float) -> void:
 
 
 func _draw_front_windows(x: float, x_end: float, y: float, height: float) -> void:
-	for floor_index in range(3):
-		var z_low := 0.58 + float(floor_index) * 1.43
-		for window_index in range(7):
-			var window_x := x + 0.7 + float(window_index) * (x_end - x - 1.4) / 6.0
-			if floor_index == 0 and window_index <= 5:
-				continue
-			_draw_front_window(window_x, y, z_low, floor_index == 2 and window_index % 3 == 0)
+	for floor_index in range(5):
+		var z_low := 1.7 + float(floor_index) * 1.04
+		for window_index in range(5):
+			var window_x := x + 0.68 + float(window_index) * (x_end - x - 1.36) / 4.0
+			_draw_front_window(window_x, y, z_low, floor_index == 4 and window_index % 3 == 0, 0.72)
+			if floor_index in [1, 3] and window_index in [1, 3]:
+				_draw_front_balcony(window_x, y, z_low - 0.08)
 
 
-func _draw_front_window(x: float, y: float, z_low: float, glowing: bool) -> void:
+func _draw_front_window(x: float, y: float, z_low: float, glowing: bool, window_height: float = 0.92) -> void:
 	var half_width := 0.34
 	var points := PackedVector2Array([
-		grid_to_screen(x - half_width, y, z_low + 0.92),
-		grid_to_screen(x + half_width, y, z_low + 0.92),
+		grid_to_screen(x - half_width, y, z_low + window_height),
+		grid_to_screen(x + half_width, y, z_low + window_height),
 		grid_to_screen(x + half_width, y, z_low),
 		grid_to_screen(x - half_width, y, z_low),
 	])
@@ -238,14 +240,25 @@ func _draw_front_window(x: float, y: float, z_low: float, glowing: bool) -> void
 	draw_line(points[0].lerp(points[3], 0.52), points[1].lerp(points[2], 0.52), Color("#372f2c"), 1.0)
 
 
+func _draw_front_balcony(x: float, y: float, level: float) -> void:
+	var left := grid_to_screen(x - 0.48, y + 0.08, level)
+	var right := grid_to_screen(x + 0.48, y + 0.08, level)
+	draw_line(left, right, Color("#39393a"), 4.0)
+	for rail_index in range(5):
+		var t := float(rail_index) / 4.0
+		var base := left.lerp(right, t)
+		draw_line(base + Vector2(0, -8), base, Color("#4d4948"), 1.0)
+	draw_line(left + Vector2(0, -8), right + Vector2(0, -8), Color("#4d4948"), 1.0)
+
+
 func _draw_side_windows(x: float, y: float, y_end: float, height: float) -> void:
-	for floor_index in range(3):
-		var z_low := 0.58 + float(floor_index) * 1.43
+	for floor_index in range(5):
+		var z_low := 1.7 + float(floor_index) * 1.04
 		for window_index in range(4):
 			var window_y := y + 0.85 + float(window_index) * (y_end - y - 1.7) / 3.0
 			var points := PackedVector2Array([
-				grid_to_screen(x, window_y - 0.3, z_low + 0.9),
-				grid_to_screen(x, window_y + 0.3, z_low + 0.9),
+				grid_to_screen(x, window_y - 0.3, z_low + 0.72),
+				grid_to_screen(x, window_y + 0.3, z_low + 0.72),
 				grid_to_screen(x, window_y + 0.3, z_low),
 				grid_to_screen(x, window_y - 0.3, z_low),
 			])
@@ -268,70 +281,124 @@ func _draw_front_door(x: float, y: float) -> void:
 	draw_line(canopy_left, canopy_right, PALETTE.roof_dark, 6.0)
 
 
-func _draw_gabled_roof(x: float, y: float, width: float, depth: float, base: float, rise: float) -> void:
-	var back_left := grid_to_screen(x, y, base)
-	var back_right := grid_to_screen(x + width, y, base)
-	var front_left := grid_to_screen(x, y + depth, base)
-	var front_right := grid_to_screen(x + width, y + depth, base)
-	var ridge_left := grid_to_screen(x, y + depth * 0.5, base + rise)
-	var ridge_right := grid_to_screen(x + width, y + depth * 0.5, base + rise)
-	draw_colored_polygon(PackedVector2Array([back_left, back_right, ridge_right, ridge_left]), PALETTE.roof_light)
-	draw_colored_polygon(PackedVector2Array([front_left, front_right, ridge_right, ridge_left]), PALETTE.roof_mid)
-	draw_polyline(PackedVector2Array([ridge_left, ridge_right]), Color("#9ca7a0"), 4.0)
-	for stripe in range(1, 10):
-		var t := float(stripe) / 10.0
-		draw_line(front_left.lerp(front_right, t), ridge_left.lerp(ridge_right, t), PALETTE.roof_dark, 1.0)
-	for course in range(1, 5):
-		var t := float(course) / 5.0
-		draw_line(front_left.lerp(ridge_left, t), front_right.lerp(ridge_right, t), Color(0.18, 0.28, 0.31, 0.58), 1.0)
-	for weathering in [Vector2(0.18, 0.34), Vector2(0.43, 0.63), Vector2(0.74, 0.25), Vector2(0.86, 0.69)]:
-		var left_edge := front_left.lerp(ridge_left, weathering.y)
-		var right_edge := front_right.lerp(ridge_right, weathering.y)
-		var point := left_edge.lerp(right_edge, weathering.x)
-		draw_rect(Rect2(point + Vector2(-5, -2), Vector2(11, 3)), Color(0.52, 0.62, 0.60, 0.36))
-
-
-func _draw_corner_tower() -> void:
-	var height := 6.45
-	var base_left := grid_to_screen(10.7, 8.5)
-	var base_tip := grid_to_screen(13.9, 10.0)
-	var base_right := grid_to_screen(13.1, 6.85)
-	var top_left := grid_to_screen(10.7, 8.5, height)
-	var top_tip := grid_to_screen(13.9, 10.0, height)
-	var top_right := grid_to_screen(13.1, 6.85, height)
-	draw_colored_polygon(PackedVector2Array([top_left, top_tip, base_tip, base_left]), PALETTE.brick_mid.lightened(0.04))
-	draw_colored_polygon(PackedVector2Array([top_right, top_tip, base_tip, base_right]), PALETTE.brick_dark)
-	for level in [0.32, 1.75, 3.18, 4.62, 6.18]:
-		draw_line(grid_to_screen(10.7, 8.5, level), grid_to_screen(13.9, 10.0, level), Color("#b49372"), 3.0)
-		draw_line(grid_to_screen(13.1, 6.85, level), grid_to_screen(13.9, 10.0, level), Color("#806552"), 2.0)
-	for floor_index in range(4):
-		var z_low := 0.62 + float(floor_index) * 1.43
-		_draw_wedge_window(top_left.lerp(top_tip, 0.46), base_left.lerp(base_tip, 0.46), z_low / height, floor_index % 3 == 0)
-		_draw_wedge_window(top_right.lerp(top_tip, 0.48), base_right.lerp(base_tip, 0.48), z_low / height, floor_index == 2)
-	var peak := grid_to_screen(12.5, 8.55, 8.25)
-	draw_colored_polygon(PackedVector2Array([top_left, top_tip, peak]), PALETTE.roof_mid)
-	draw_colored_polygon(PackedVector2Array([top_right, top_tip, peak]), PALETTE.roof_dark)
-	draw_colored_polygon(PackedVector2Array([top_left, top_right, peak]), PALETTE.roof_light)
-	draw_line(top_tip, peak, Color("#9aa59e"), 3.0)
-
-
-func _draw_wedge_window(top_anchor: Vector2, bottom_anchor: Vector2, vertical_t: float, glowing: bool) -> void:
-	var center := bottom_anchor.lerp(top_anchor, vertical_t + 0.075)
-	var points := PackedVector2Array([
-		center + Vector2(-7, -11),
-		center + Vector2(7, -8),
-		center + Vector2(7, 8),
-		center + Vector2(-7, 5),
+func _draw_flat_roof(x: float, y: float, width: float, depth: float, level: float) -> void:
+	var roof := PackedVector2Array([
+		grid_to_screen(x + 0.15, y + 0.15, level + 0.03),
+		grid_to_screen(x + width - 0.15, y + 0.15, level + 0.03),
+		grid_to_screen(x + width - 0.15, y + depth - 0.15, level + 0.03),
+		grid_to_screen(x + 0.15, y + depth - 0.15, level + 0.03),
 	])
-	draw_colored_polygon(points, PALETTE.window_glow if glowing else PALETTE.window)
-	draw_polyline(PackedVector2Array([points[0], points[1], points[2], points[3], points[0]]), Color("#b69373"), 2.0)
+	draw_colored_polygon(roof, Color("#4e5551"))
+	draw_polyline(PackedVector2Array([roof[0], roof[1], roof[2], roof[3], roof[0]]), Color("#c7bba4"), 4.0)
+	for seam in range(1, 7):
+		var t := float(seam) / 7.0
+		draw_line(roof[0].lerp(roof[3], t), roof[1].lerp(roof[2], t), Color(0.24, 0.28, 0.27, 0.65), 1.0)
 
 
-func _draw_roof_details() -> void:
-	for chimney in [Vector3(5.8, 4.2, 6.0), Vector3(10.1, 4.8, 6.35)]:
-		var base := grid_to_screen(chimney.x, chimney.y, chimney.z)
-		draw_rect(Rect2(base + Vector2(-5, -17), Vector2(10, 18)), Color("#60453a"))
-		draw_rect(Rect2(base + Vector2(-7, -19), Vector2(14, 4)), Color("#8d6650"))
+func _wukang_bow_points() -> Array[Vector2]:
+	return [
+		Vector2(10.4, 7.8),
+		Vector2(11.2, 8.12),
+		Vector2(11.92, 8.18),
+		Vector2(12.5, 7.92),
+		Vector2(12.72, 7.45),
+		Vector2(12.55, 6.78),
+	]
+
+
+func _draw_rounded_bow(height: float) -> void:
+	var bow := _wukang_bow_points()
+	var panel_colors := [Color("#8c6651"), Color("#9b7058"), Color("#946a54"), Color("#7e5949"), Color("#684a40")]
+	for panel_index in range(bow.size() - 1):
+		var a := bow[panel_index]
+		var b := bow[panel_index + 1]
+		var face := PackedVector2Array([
+			grid_to_screen(a.x, a.y, height),
+			grid_to_screen(b.x, b.y, height),
+			grid_to_screen(b.x, b.y, 0.0),
+			grid_to_screen(a.x, a.y, 0.0),
+		])
+		draw_colored_polygon(face, panel_colors[panel_index])
+		for course in range(1, 15):
+			var level := height * float(course) / 15.0
+			draw_line(grid_to_screen(a.x, a.y, level), grid_to_screen(b.x, b.y, level), Color(0.20, 0.13, 0.11, 0.25), 1.0)
+		var stone_face := _bow_panel_quad(a, b, 0.04, 1.48, 0.02)
+		draw_colored_polygon(stone_face, Color("#9f9584").darkened(float(panel_index) * 0.045))
+		var arcade := _bow_panel_quad(a, b, 0.08, 1.12, 0.22)
+		draw_colored_polygon(arcade, Color("#343336"))
+		draw_polyline(PackedVector2Array([arcade[0], arcade[1], arcade[2], arcade[3], arcade[0]]), Color("#c0b49d"), 2.0)
+		for floor_index in range(5):
+			var z_low := 1.7 + float(floor_index) * 1.04
+			var window := _bow_panel_quad(a, b, z_low, z_low + 0.72, 0.25)
+			draw_colored_polygon(window, PALETTE.window_glow if floor_index == 4 and panel_index == 1 else PALETTE.window.darkened(float(panel_index) * 0.05))
+			draw_polyline(PackedVector2Array([window[0], window[1], window[2], window[3], window[0]]), Color("#c3aa8d"), 1.5)
+			if floor_index in [1, 3] and panel_index in [1, 2, 3]:
+				_draw_bow_air_conditioner(window, panel_index % 2 == 0)
+	_draw_bow_balcony(bow, 2.66)
+	_draw_bow_balcony(bow, 4.74)
+	_draw_bow_pavilion(bow, height)
+
+
+func _bow_panel_quad(a: Vector2, b: Vector2, z_low: float, z_high: float, inset: float) -> PackedVector2Array:
+	var inner_a := a.lerp(b, inset)
+	var inner_b := a.lerp(b, 1.0 - inset)
+	return PackedVector2Array([
+		grid_to_screen(inner_a.x, inner_a.y, z_high),
+		grid_to_screen(inner_b.x, inner_b.y, z_high),
+		grid_to_screen(inner_b.x, inner_b.y, z_low),
+		grid_to_screen(inner_a.x, inner_a.y, z_low),
+	])
+
+
+func _draw_bow_balcony(bow: Array[Vector2], level: float) -> void:
+	var balcony := PackedVector2Array()
+	for point in bow:
+		balcony.append(grid_to_screen(point.x, point.y, level))
+	draw_polyline(balcony, Color("#3b3b3b"), 5.0)
+	for point in balcony:
+		draw_line(point + Vector2(0, -9), point, Color("#504b49"), 1.0)
+	var upper := PackedVector2Array()
+	for point in balcony:
+		upper.append(point + Vector2(0, -9))
+	draw_polyline(upper, Color("#504b49"), 1.0)
+
+
+func _draw_bow_air_conditioner(window: PackedVector2Array, place_right: bool) -> void:
+	var anchor := window[1].lerp(window[2], 0.45) if place_right else window[0].lerp(window[3], 0.45)
+	var offset := Vector2(3, -2) if place_right else Vector2(-10, -2)
+	draw_rect(Rect2(anchor + offset, Vector2(8, 7)), Color("#8f5d54"))
+	for slit in range(3):
+		draw_line(anchor + offset + Vector2(1, 2 + slit * 2), anchor + offset + Vector2(7, 2 + slit * 2), Color("#543c39"), 1.0)
+
+
+func _draw_bow_pavilion(bow: Array[Vector2], base_level: float) -> void:
+	var pavilion_bottom := base_level + 0.08
+	var pavilion_top := base_level + 0.82
+	for panel_index in range(bow.size() - 1):
+		var a := bow[panel_index]
+		var b := bow[panel_index + 1]
+		var face := _bow_panel_quad(a, b, pavilion_bottom, pavilion_top, 0.02)
+		draw_colored_polygon(face, Color("#aaa393").darkened(float(panel_index) * 0.04))
+		var window := _bow_panel_quad(a, b, pavilion_bottom + 0.16, pavilion_top - 0.13, 0.22)
+		draw_colored_polygon(window, Color("#455d63"))
+		draw_polyline(PackedVector2Array([window[0], window[1], window[2], window[3], window[0]]), Color("#d0c8b7"), 1.5)
+	var bottom_line := PackedVector2Array()
+	var top_line := PackedVector2Array()
+	for point in bow:
+		bottom_line.append(grid_to_screen(point.x, point.y, pavilion_bottom))
+		top_line.append(grid_to_screen(point.x, point.y, pavilion_top))
+	draw_polyline(bottom_line, Color("#d2c9b5"), 5.0)
+	draw_polyline(top_line, Color("#e0d8c5"), 5.0)
+
+
+func _draw_wukang_cornice(height: float) -> void:
+	for level in [height - 0.18, height + 0.02]:
+		draw_line(grid_to_screen(4.0, 7.8, level), grid_to_screen(10.4, 7.8, level), Color("#d0c3aa"), 5.0)
+		draw_line(grid_to_screen(12.55, 3.0, level), grid_to_screen(12.55, 6.78, level), Color("#a99e8d"), 4.0)
+		var bow_line := PackedVector2Array()
+		for point in _wukang_bow_points():
+			bow_line.append(grid_to_screen(point.x, point.y, level))
+		draw_polyline(bow_line, Color("#d0c3aa"), 5.0)
 
 
 func _draw_courtyard_details() -> void:

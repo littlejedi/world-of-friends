@@ -11,11 +11,14 @@ Sources:
 
 Traits carried into the art study:
 
-- Long, narrow ship-like wedge at the street junction.
+- Long, narrow body terminating in a broad rounded bow rather than a pointed wedge.
 - Red-brick upper façade divided into strong horizontal bands.
-- Stone-colored pedestal with continuous ground-floor arcades.
-- Repeated tall windows, iron balconies, and a narrow pointed roof termination.
+- Stone-colored pedestal with continuous ground-floor arcades wrapping the rounded corner.
+- Repeated tall windows, iron balconies, exterior utility boxes, and strong projecting cornices.
+- Flat roofline with a pale rounded rooftop pavilion above the bow.
 - Mature plane trees, cross streets, pedestrian paving, and dense everyday street detail.
+
+Two user-supplied street-level photographs were used during checkpoint 17 to correct the earlier overly sharp corner, steep roof, and compressed floor count. The photographs remain external references and are not distributed with the project.
 
 ## Xuhui Riverside
 

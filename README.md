@@ -2,7 +2,7 @@
 
 A private 2.5D pixel-style exploration game connecting handcrafted versions of Shanghai and Seattle.
 
-An isometric art-direction overhaul is now being developed alongside the stable 3D game. The Shanghai visual lab uses painted architectural surfaces, baked-looking shadows, detailed props, Y-sorted characters, and the existing keyboard controls. Press `1`, `2`, or `3` in the lab to inspect the Wukang Mansion, Xuhui Riverside, and Oriental Pearl studies.
+An isometric art-direction overhaul is now being developed alongside the stable 3D game. The Shanghai visual lab uses painted architectural surfaces, baked-looking shadows, detailed props, Y-sorted characters, and the existing keyboard controls. Its Wukang Mansion study now follows the real building's rounded bow, flat roof, wrapped stone arcade, and rooftop pavilion. Press `1`, `2`, or `3` in the lab to inspect the Wukang Mansion, Xuhui Riverside, and Oriental Pearl studies.
 
 The current checkpoint is a playable procedural prototype. It includes:
 

@@ -215,9 +215,23 @@
 - Automated coverage expanded to 91 checks for both launch routes and their target scenes.
 - Mac and browser package versions advanced to 0.18.0 with the launcher as the default entry point.
 
+## Checkpoint 19 — Unified collision-aware Shanghai
+
+- Replaced the launcher's disconnected art-study route with one 3,120-pixel-wide camera-scrollable Shanghai world.
+- Wukang Mansion, Xuhui Riverside, and the Oriental Pearl Tower now remain loaded together and can be reached by walking.
+- Number keys act as instant neighborhood shortcuts within the same map instead of replacing its environment.
+- Smooth following camera tracks normal movement and snaps correctly after neighborhood shortcuts.
+- Wukang Mansion now has a physical seven-point footprint that blocks the avatar before it enters the façade.
+- River, crane-base, and Oriental Pearl foundation collision polygons protect the remaining landmark depth illusions.
+- Unified HUD reports the nearest district while preserving navigation help and a return route to the launcher.
+- Native 640×360 captures verified all three neighborhoods and safe Wukang player spacing.
+- Automated coverage expanded to 97 checks, including a real character-motion collision probe against Wukang Mansion.
+- Mac and browser package versions advanced to 0.19.0.
+
 ## Next checkpoint
 
-- Convert one complete Shanghai gameplay block to the new renderer after visual approval.
+- Add landmark inspection prompts and city-guide discovery to the unified 2.5D Shanghai map.
+- Migrate the Shanghai ticket office and shuttle boarding flow into the unified renderer.
 - Replace deterministic study surfaces with approved painterly raster assets as they become available.
 - Install Blender only if the pre-rendered hero-asset workflow is approved.
 - Decide whether to publish the private browser build to an access-controlled host.

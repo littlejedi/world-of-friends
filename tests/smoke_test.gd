@@ -22,9 +22,25 @@ func _run() -> void:
 	await get_tree().process_frame
 	var launch_metrics: Dictionary = launcher.get_launch_metrics()
 	check(int(launch_metrics.mode_count) == 2, "Launcher exposes both the 2.5D visual direction and complete 3D prototype")
-	check(bool(launch_metrics.isometric_button_present) and launch_metrics.isometric_scene == "res://scenes/isometric_style_lab.tscn", "Launcher provides a playable route into the 2.5D Shanghai slice")
+	check(bool(launch_metrics.isometric_button_present) and launch_metrics.isometric_scene == "res://scenes/isometric_shanghai_world.tscn", "Launcher provides a playable route into the unified 2.5D Shanghai world")
 	check(bool(launch_metrics.classic_button_present) and launch_metrics.classic_scene == "res://scenes/main.tscn", "Launcher preserves access to the complete 3D gameplay loop")
 	launcher.queue_free()
+	await get_tree().process_frame
+
+	var isometric_world_scene: PackedScene = load("res://scenes/isometric_shanghai_world.tscn")
+	var isometric_world := isometric_world_scene.instantiate()
+	get_tree().root.add_child(isometric_world)
+	await get_tree().process_frame
+	await get_tree().physics_frame
+	var world_metrics: Dictionary = isometric_world.get_world_metrics()
+	check(int(world_metrics.district_count) == 3 and int(world_metrics.world_width) == 3120, "Unified 2.5D Shanghai places all three landmark districts on one connected map")
+	check(world_metrics.district_modes == PackedStringArray(["wukang", "xuhui", "oriental_pearl"]), "Unified Shanghai keeps Wukang Mansion, Xuhui Riverside, and Oriental Pearl active together")
+	check(int(world_metrics.collision_shape_count) >= 6, "Unified Shanghai gives buildings, water, and tower bases physical collision footprints")
+	check(isometric_world.probe_wukang_collision_for_test(), "Wukang Mansion physically blocks the avatar instead of allowing it through the façade")
+	check(bool(world_metrics.camera_present) and bool(world_metrics.player_present), "Unified Shanghai follows the controllable avatar with a scrolling camera")
+	isometric_world.focus_district_for_test("oriental_pearl")
+	check(isometric_world.current_district == "oriental_pearl" and isometric_world.player.position.x > 2000.0, "Landmark shortcuts navigate within the same unified world")
+	isometric_world.queue_free()
 	await get_tree().process_frame
 
 	var style_scene: PackedScene = load("res://scenes/isometric_style_lab.tscn")

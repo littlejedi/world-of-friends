@@ -1,7 +1,7 @@
 class_name WorldOfFriendsLauncher
 extends Control
 
-const ISOMETRIC_SCENE := "res://scenes/isometric_style_lab.tscn"
+const ISOMETRIC_SCENE := "res://scenes/isometric_shanghai_world.tscn"
 const CLASSIC_SCENE := "res://scenes/main.tscn"
 
 var isometric_button: Button
@@ -60,7 +60,7 @@ func _build_interface() -> void:
 		Vector2(38, 126),
 		"NEW VISUAL DIRECTION",
 		"2.5D SHANGHAI",
-		"Painted pixel landmarks with diagonal exploration.\nIncludes Wukang Mansion, Xuhui Riverside,\nand the Oriental Pearl Tower art studies.",
+		"One connected pixel-art Shanghai map.\nWalk between Wukang Mansion, Xuhui Riverside,\nand the Oriental Pearl Tower.",
 		Color("#6e493b")
 	)
 	add_child(isometric_panel)

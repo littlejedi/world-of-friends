@@ -26,15 +26,57 @@ const PALETTE := {
 }
 
 var study_mode := "wukang"
+var collision_body: StaticBody2D
 
 
 func _ready() -> void:
+	rebuild_collisions()
 	queue_redraw()
 
 
 func set_study_mode(new_mode: String) -> void:
 	study_mode = new_mode
+	rebuild_collisions()
 	queue_redraw()
+
+
+func rebuild_collisions() -> void:
+	if collision_body != null and is_instance_valid(collision_body):
+		collision_body.queue_free()
+	collision_body = StaticBody2D.new()
+	collision_body.name = "LandmarkCollisions"
+	collision_body.collision_layer = 1
+	collision_body.collision_mask = 1
+	add_child(collision_body)
+	for index in range(get_collision_polygons().size()):
+		var polygon := CollisionPolygon2D.new()
+		polygon.name = "Footprint%d" % index
+		polygon.polygon = get_collision_polygons()[index]
+		collision_body.add_child(polygon)
+
+
+func get_collision_polygons() -> Array[PackedVector2Array]:
+	match study_mode:
+		"xuhui":
+			return [
+				PackedVector2Array([Vector2(-520, -310), Vector2(520, -310), Vector2(520, 34), Vector2(-520, 34)]),
+				PackedVector2Array([Vector2(-280, -12), Vector2(-220, -12), Vector2(-220, 34), Vector2(-280, 34)]),
+				PackedVector2Array([Vector2(306, -10), Vector2(364, -10), Vector2(364, 34), Vector2(306, 34)]),
+			]
+		"oriental_pearl":
+			return [
+				PackedVector2Array([Vector2(-520, -310), Vector2(-112, -95), Vector2(-70, 124), Vector2(-520, 205)]),
+				PackedVector2Array([Vector2(35, 155), Vector2(68, 132), Vector2(125, 132), Vector2(158, 156), Vector2(158, 215), Vector2(35, 215)]),
+			]
+		_:
+			return [PackedVector2Array([
+				Vector2(-136, -112), Vector2(30, -188), Vector2(310, -48),
+				Vector2(184, 63), Vector2(143, 82), Vector2(86, 72), Vector2(-136, -72),
+			])]
+
+
+func get_collision_shape_count() -> int:
+	return collision_body.get_child_count() if collision_body != null else 0
 
 
 func get_study_features() -> PackedStringArray:

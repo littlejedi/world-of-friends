@@ -2,9 +2,9 @@
 
 A private 2.5D pixel-style exploration game connecting handcrafted versions of Shanghai and Seattle.
 
-The exported app now opens with a mode launcher. `Explore 2.5D Shanghai` enters the playable visual-overhaul slice; `Play 3D Prototype` opens the complete Shanghai–Seattle gameplay loop while its environments are migrated.
+The exported app now opens with a mode launcher. `Explore 2.5D Shanghai` enters one camera-scrollable map containing Wukang Mansion, Xuhui Riverside, and the Oriental Pearl Tower; `Play 3D Prototype` opens the complete Shanghai–Seattle gameplay loop while its environments are migrated.
 
-An isometric art-direction overhaul is now being developed alongside the stable 3D game. The Shanghai visual lab uses painted architectural surfaces, baked-looking shadows, detailed props, Y-sorted characters, and the existing keyboard controls. Its Wukang Mansion study now follows the real building's rounded bow, flat roof, wrapped stone arcade, and rooftop pavilion. Press `1`, `2`, or `3` in the lab to inspect the Wukang Mansion, Xuhui Riverside, and Oriental Pearl studies.
+An isometric art-direction overhaul is now being developed alongside the stable 3D game. The unified Shanghai map uses painted architectural surfaces, baked-looking shadows, detailed props, a camera-followed character, and physical landmark footprints. Its Wukang Mansion follows the real building's rounded bow, flat roof, wrapped stone arcade, and rooftop pavilion. Press `1`, `2`, or `3` to jump to Wukang Mansion, Xuhui Riverside, or Oriental Pearl without leaving the connected map.
 
 The current checkpoint is a playable procedural prototype. It includes:
 
@@ -50,13 +50,13 @@ HOME=/private/tmp/wof-godot-home godot --headless --path . --scene res://tests/s
 
 Godot stores the personal game save in `user://world_of_friends_save.json`.
 
-To launch the new isometric visual direction directly:
+To launch the unified isometric Shanghai world directly:
 
 ```sh
-godot --path . --scene res://scenes/isometric_style_lab.tscn
+godot --path . --scene res://scenes/isometric_shanghai_world.tscn
 ```
 
-Inside the 2.5D slice, use `1`, `2`, and `3` to switch among Wukang Mansion, Xuhui Riverside, and the Oriental Pearl Tower. Press Escape to return to the mode launcher.
+Inside the 2.5D world, walk continuously with WASD or the arrow keys. `1`, `2`, and `3` are fast neighborhood shortcuts, and Escape returns to the mode launcher. The separate `scenes/isometric_style_lab.tscn` remains available for isolated art inspection.
 
 Optional personal card images can be placed under ignored `private_assets/cards/` using the card ID as the filename—for example `spark_mouse.png`. PNG, JPEG, and WebP are supported. The same files can alternatively live under the Godot user-data `cards/` directory. Personal images replace the generated original fallback artwork.
 

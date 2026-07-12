@@ -30,6 +30,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey:
 		match event.keycode:
+			KEY_ESCAPE:
+				get_tree().change_scene_to_file("res://scenes/launcher.tscn")
 			KEY_1:
 				_set_study("wukang")
 			KEY_2:
@@ -140,7 +142,7 @@ func _build_hud() -> void:
 	note.position = Vector2(390, 20)
 	note.size = Vector2(232, 52)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	note.text = "1 WUKANG · 2 XUHUI · 3 PEARL\nBAKED LIGHT · Y-SORTED DEPTH"
+	note.text = "1 WUKANG · 2 XUHUI · 3 PEARL\nESC MENU · Y-SORTED DEPTH"
 	note.add_theme_font_size_override("font_size", 12)
 	note.add_theme_color_override("font_color", Color("#fff5d5"))
 	canvas.add_child(note)
@@ -159,7 +161,7 @@ func _update_study_copy() -> void:
 			subtitle_label.text = "Tripod supports · stacked spheres · Pudong skyline"
 		_:
 			title_label.text = "SHANGHAI · WUKANG MANSION"
-			subtitle_label.text = "Ship-like wedge · arcaded base · plane-tree streets"
+			subtitle_label.text = "Rounded bow · arcaded base · plane-tree streets"
 
 
 func set_study_for_test(study_id: String) -> void:

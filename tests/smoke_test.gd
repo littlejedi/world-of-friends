@@ -16,6 +16,17 @@ func check(condition: bool, message: String) -> void:
 
 
 func _run() -> void:
+	var launcher_scene: PackedScene = load("res://scenes/launcher.tscn")
+	var launcher := launcher_scene.instantiate()
+	get_tree().root.add_child(launcher)
+	await get_tree().process_frame
+	var launch_metrics: Dictionary = launcher.get_launch_metrics()
+	check(int(launch_metrics.mode_count) == 2, "Launcher exposes both the 2.5D visual direction and complete 3D prototype")
+	check(bool(launch_metrics.isometric_button_present) and launch_metrics.isometric_scene == "res://scenes/isometric_style_lab.tscn", "Launcher provides a playable route into the 2.5D Shanghai slice")
+	check(bool(launch_metrics.classic_button_present) and launch_metrics.classic_scene == "res://scenes/main.tscn", "Launcher preserves access to the complete 3D gameplay loop")
+	launcher.queue_free()
+	await get_tree().process_frame
+
 	var style_scene: PackedScene = load("res://scenes/isometric_style_lab.tscn")
 	var style_lab := style_scene.instantiate()
 	get_tree().root.add_child(style_lab)

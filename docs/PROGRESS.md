@@ -204,9 +204,19 @@
 - Native M5 capture verified the corrected silhouette at the target resolution.
 - Mac and browser package versions advanced to 0.17.0 while the stable 3D game remains the default entry point.
 
+## Checkpoint 18 — 2.5D mode launcher
+
+- New pixel-styled launch screen makes the visual overhaul accessible from the exported application.
+- `Explore 2.5D Shanghai` opens the controllable isometric landmark slice with Wukang Mansion selected first.
+- `Play 3D Prototype` preserves the complete Shanghai–Seattle shuttle, friendship, exploration, and trading loop during migration.
+- Escape returns from the 2.5D slice to the launcher; number keys continue to switch among the three Shanghai art studies.
+- Corrected the remaining Wukang study copy from “ship-like wedge” to “rounded bow.”
+- Native 640×360 capture caught and corrected a launcher panel-layout regression before release packaging.
+- Automated coverage expanded to 91 checks for both launch routes and their target scenes.
+- Mac and browser package versions advanced to 0.18.0 with the launcher as the default entry point.
+
 ## Next checkpoint
 
-- Review the Shanghai isometric slice and lock its palette, texture density, and character scale.
 - Convert one complete Shanghai gameplay block to the new renderer after visual approval.
 - Replace deterministic study surfaces with approved painterly raster assets as they become available.
 - Install Blender only if the pre-rendered hero-asset workflow is approved.
